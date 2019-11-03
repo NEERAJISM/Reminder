@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_dashboard">
+
+    <fragment
+        android:id="@+id/nav_dashboard"
+        android:name="com.markone.reminder.ui.dashboard.DashboardFragment"
+        android:label="@string/menu_dashboard"
+        tools:layout="@layout/fragment_dashboard">
+        <action
+            android:id="@+id/action_nav_dashboard_to_nav_reminder"
+            app:destination="@id/nav_reminder" />
+        <action
+            android:id="@+id/action_nav_dashboard_to_nav_slideshow"
+            app:destination="@id/nav_slideshow" />
+        <action
+            android:id="@+id/action_nav_dashboard_to_nav_share"
+            app:destination="@id/nav_share" />
+        <action
+            android:id="@+id/action_nav_dashboard_to_nav_tools"
+            app:destination="@id/nav_tools" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_slideshow"
+        android:name="com.markone.reminder.ui.tutorial.TutorialFragment"
+        android:label="@string/menu_tutorial"
+        tools:layout="@layout/fragment_tutorial" />
+
+    <fragment
+        android:id="@+id/nav_tools"
+        android:name="com.markone.reminder.ui.settings.SettingsFragment"
+        android:label="@string/menu_settings"
+        tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/nav_share"
+        android:name="com.markone.reminder.ui.share.ShareFragment"
+        android:label="@string/menu_share"
+        tools:layout="@layout/fragment_share" />
+
+    <fragment
+        android:id="@+id/nav_reminder"
+        android:name="com.markone.reminder.ui.reminder.ReminderFragment"
+        android:label="@string/create_reminder"
+        tools:layout="@layout/fragment_reminder" />
+
+</navigation>
