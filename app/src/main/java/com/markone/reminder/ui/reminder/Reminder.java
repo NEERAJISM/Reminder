@@ -7,6 +7,7 @@ import com.markone.reminder.Common;
  */
 public class Reminder {
 
+    private String id = "";
     private String name = "";
     private String details = "";
     private Common.Status status = Common.Status.None;
@@ -18,6 +19,7 @@ public class Reminder {
     private int startDate_Day;
     private int startDate_Hour;
     private int startDate_Minute;
+    private int ampm;
 
     // frequency
     private int frequencyDays;
@@ -118,5 +120,22 @@ public class Reminder {
 
     public void setFrequency(Common.Frequency frequency) {
         this.frequency = frequency;
+    }
+
+
+    public int getAmpm() {
+        return ampm;
+    }
+
+    public void setAmpm(int ampm) {
+        this.ampm = ampm;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -6,7 +6,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 public class Common {
 
-    public static final String USER_DB = "RUsers";
+    public static final String REMINDER_DB = "Reminder DB";
 
     public static void generateSnackBar(View view, String message) {
         Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).show();
