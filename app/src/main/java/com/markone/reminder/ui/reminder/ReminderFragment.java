@@ -21,23 +21,22 @@ import com.markone.reminder.Common;
 import com.markone.reminder.R;
 import com.markone.reminder.databinding.FragmentReminderBinding;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 /**
  * Created by Neeraj on 02-Nov-19
  */
 public class ReminderFragment extends Fragment {
-    private final Calendar myCalendar = Calendar.getInstance();
-    CollectionReference reminderCollectionReference = FirebaseFirestore.getInstance()
+    private final CollectionReference reminderCollectionReference = FirebaseFirestore.getInstance()
             .collection(Common.REMINDER_DB)
-            .document("Neeraj User ID")
-            .collection("Reminders");
+            .document(Common.USER_ID)
+            .collection(Common.REMINDER_COLLECTION);
+    private final Calendar myCalendar = Calendar.getInstance();
     private FragmentReminderBinding binding;
+
     private int hour, min, ampm, day, year, month;
 
     private List<String> frequency = new ArrayList<String>() {{
@@ -67,7 +66,6 @@ public class ReminderFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 createReminder();
-                (Objects.requireNonNull(getActivity())).onBackPressed();
             }
         });
 
@@ -102,10 +100,7 @@ public class ReminderFragment extends Fragment {
         day = myCalendar.get(Calendar.DAY_OF_MONTH);
         month = myCalendar.get(Calendar.MONTH);
         year = myCalendar.get(Calendar.YEAR);
-        String myFormat = "dd MMM yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(myFormat, Locale.getDefault());
-        format.setCalendar(myCalendar);
-        binding.tvDatePicker.setText(format.format(myCalendar.getTime()));
+        binding.tvDatePicker.setText(Common.getFormattedDate(day, month, year));
     }
 
     private void setTimePicker() {
@@ -130,15 +125,10 @@ public class ReminderFragment extends Fragment {
                         }, hour, min, false).show();
             }
         });
-
-
     }
 
     private void updateTimePicker() {
-        String hourString = (hour < 10 ? "0" : "") + (hour > 12 ? hour - 12 : hour);
-        String minString = (min < 10 ? "0" : "") + min;
-        String ampmString = ampm == Calendar.AM ? "AM" : "PM";
-        binding.tvTimePicker.setText(hourString + " : " + minString + " " + ampmString);
+        binding.tvTimePicker.setText(Common.getFormattedTime(hour, min, ampm));
     }
 
 
@@ -151,10 +141,12 @@ public class ReminderFragment extends Fragment {
         reminder.setDetails(binding.etDetails.getText().toString());
         reminder.setStartDate_Hour(hour);
         reminder.setStartDate_Minute(min);
+        reminder.setStartDate_ampm(ampm);
         reminder.setStartDate_Day(day);
         reminder.setStartDate_Month(month);
         reminder.setStartDate_Year(year);
 
         documentReference.set(reminder);
+        (Objects.requireNonNull(getActivity())).onBackPressed();
     }
 }

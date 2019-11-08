@@ -25,6 +25,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
+    public void updateReminders(List<Reminder> reminders) {
+        if (reminders != null) {
+            reminderList.clear();
+            this.reminderList.addAll(reminders);
+        }
+    }
+
     @NonNull
     @Override
     public MyRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -67,9 +74,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             final Reminder reminder = reminderList.get(position);
 
+            tvName.setText(reminder.getName());
+
             tvStatus.setText(reminder.getStatus().toString());
-            tvDate.setText(reminder.getStartDate_Day() + " " + reminder.getStartDate_Month() + " " + reminder.getStartDate_Year());
-            tvTime.setText(reminder.getStartDate_Hour() + " : " + reminder.getStartDate_Minute());
+            tvDate.setText(Common.getFormattedDate(reminder.getStartDate_Day(), reminder.getStartDate_Month(), reminder.getStartDate_Year()));
+            tvTime.setText(Common.getFormattedTime(reminder.getStartDate_Hour(), reminder.getStartDate_Minute(), reminder.getStartDate_ampm()));
 
             if (reminder.getFrequency() != Common.Frequency.None) {
                 tvFrequency.setText(reminder.getFrequency().toString());

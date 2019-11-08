@@ -19,7 +19,7 @@ public class Reminder {
     private int startDate_Day;
     private int startDate_Hour;
     private int startDate_Minute;
-    private int ampm;
+    private int startDate_ampm;
 
     // frequency
     private int frequencyDays;
@@ -123,12 +123,12 @@ public class Reminder {
     }
 
 
-    public int getAmpm() {
-        return ampm;
+    public int getStartDate_ampm() {
+        return startDate_ampm;
     }
 
-    public void setAmpm(int ampm) {
-        this.ampm = ampm;
+    public void setStartDate_ampm(int startDate_ampm) {
+        this.startDate_ampm = startDate_ampm;
     }
 
     public String getId() {

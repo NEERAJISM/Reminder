@@ -11,7 +11,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.markone.reminder.Common;
 import com.markone.reminder.MainActivity;
 import com.markone.reminder.R;
@@ -26,29 +32,39 @@ import java.util.Objects;
  * Created by Neeraj on 02-Nov-19
  */
 public class DashboardFragment extends Fragment {
+    private final CollectionReference reminderCollectionReference = FirebaseFirestore.getInstance()
+            .collection(Common.REMINDER_DB)
+            .document(Common.USER_ID)
+            .collection(Common.REMINDER_COLLECTION);
+
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private FragmentDashboardBinding fragmentDashboardBinding;
     private RecyclerView.LayoutManager layoutManager;
 
     private FloatingActionButton floatingActionButton;
+    private RecyclerViewAdapter mAdapter;
+    private List<Reminder> reminders = new ArrayList<>();
 
-    private List<Reminder> reminderList = new ArrayList<>();
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        layoutManager = new LinearLayoutManager(getContext());
+        mAdapter = new RecyclerViewAdapter(reminders);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (fragmentDashboardBinding == null) {
+            fragmentDashboardBinding = FragmentDashboardBinding.inflate(inflater, container, false);
+            floatingActionButton = fragmentDashboardBinding.fab;
+            setFloatingButtonAction();
+
+            recyclerView = fragmentDashboardBinding.rvReminders;
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setAdapter(mAdapter);
+        }
         getReminders();
-
-        FragmentDashboardBinding fragmentDashboardBinding = FragmentDashboardBinding.inflate(inflater, container, false);
-        recyclerView = fragmentDashboardBinding.rvReminders;
-        floatingActionButton = fragmentDashboardBinding.fab;
-        setFloatingButtonAction();
-
-        layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new RecyclerViewAdapter(reminderList);
-        recyclerView.setAdapter(mAdapter);
-
         return fragmentDashboardBinding.getRoot();
     }
 
@@ -56,42 +72,30 @@ public class DashboardFragment extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.generateSnackBar(view, "Replace with your own action");
                 ((MainActivity) Objects.requireNonNull(getActivity())).getNavController().navigate(R.id.nav_reminder);
             }
         });
     }
 
+    private String getUserId() {
+        return Common.USER_ID;
+    }
+
     private void getReminders() {
-        Reminder r1 = new Reminder();
-        r1.setName("Reminder 1");
-        r1.setFrequency(Common.Frequency.Daily);
-        r1.setStartDate_Day(02);
-        r1.setStartDate_Month(12);
-        r1.setStartDate_Year(1994);
-        r1.setStartDate_Hour(9);
-        r1.setStartDate_Minute(55);
-
-        Reminder r2 = new Reminder();
-        r2.setName("Reminder 2");
-        r2.setFrequency(Common.Frequency.None);
-        r2.setStartDate_Day(02);
-        r2.setStartDate_Month(12);
-        r2.setStartDate_Year(1994);
-        r2.setStartDate_Hour(9);
-        r2.setStartDate_Minute(55);
-
-        reminderList.add(r1);
-        reminderList.add(r2);
-        reminderList.add(r2);
-        reminderList.add(r2);
-        reminderList.add(r2);
-        reminderList.add(r2);
-        reminderList.add(r2);
-        reminderList.add(r2);
-        reminderList.add(r2);
-        reminderList.add(r2);
-        reminderList.add(r2);
-        reminderList.add(r2);
+        reminderCollectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull final Task<QuerySnapshot> task) {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    reminders.clear();
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                        reminders.add(documentSnapshot.toObject(Reminder.class));
+                    }
+                    mAdapter.updateReminders(reminders);
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    Common.viewToast(getContext(), "Error while getting reminders");
+                }
+            }
+        });
     }
 }
