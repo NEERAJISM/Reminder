@@ -4,11 +4,17 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Common {
     public static final String REMINDER_COLLECTION = "Reminders";
@@ -17,6 +23,8 @@ public class Common {
     //Todo remove this with actual id
     public static final String USER_ID = "Neeraj User ID";
     private static final Calendar myCalendar = Calendar.getInstance();
+
+    public static Map<String, Frequency> frequencyMap = new HashMap<>();
 
     public static void generateSnackBar(View view, String message) {
         Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).show();
@@ -27,7 +35,8 @@ public class Common {
     }
 
     public static String getFormattedTime(int hour, int min, int ampm) {
-        String hourString = (hour < 10 ? "0" : "") + (hour > 12 ? hour - 12 : hour);
+        hour = (hour > 12 ? hour - 12 : hour);
+        String hourString = (hour < 10 ? "0" : "") + hour;
         String minString = (min < 10 ? "0" : "") + min;
         String ampmString = ampm == Calendar.AM ? "AM" : "PM";
         return new StringBuilder(hourString).append(" : ").append(minString).append(" ").append(ampmString).toString();
@@ -48,7 +57,43 @@ public class Common {
     }
 
     public enum Frequency {
-        None, Custom, Daily, Weekly, Monthly, Yearly
-    }
+        Once("Once"),
+        Every_1_Min("1 Min"),
+        Every_5_Min("5 Min"),
+        Every_10_Min("10 Min"),
+        Every_30_Min("30 Min"),
+        Hourly("Hourly"),
+        Daily("Daily"),
+        Weekly("Weekly"),
+        Weekend("Weekend"),
+        Monthly("Monthly"),
+        Yearly("Yearly");
 
+        private static final Map<String, Frequency> ENUM_MAP;
+
+        static {
+            Map<String, Frequency> map = new ConcurrentHashMap<>();
+            for (Frequency instance : Frequency.values()) {
+                map.put(instance.toString(), instance);
+            }
+            ENUM_MAP = Collections.unmodifiableMap(map);
+        }
+
+        private String frequency;
+
+
+        Frequency(String s) {
+            frequency = s;
+        }
+
+        public static Frequency getFrequency(String name) {
+            return ENUM_MAP.get(name);
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return frequency;
+        }
+    }
 }

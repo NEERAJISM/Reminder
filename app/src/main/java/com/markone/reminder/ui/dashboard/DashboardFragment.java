@@ -49,7 +49,7 @@ public class DashboardFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         layoutManager = new LinearLayoutManager(getContext());
-        mAdapter = new RecyclerViewAdapter(reminders);
+        mAdapter = new RecyclerViewAdapter(getActivity(), reminders);
     }
 
     @Nullable

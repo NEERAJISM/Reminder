@@ -176,7 +176,6 @@
                 app:layout_constraintStart_toEndOf="@id/tv_repeat"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button

@@ -2,16 +2,18 @@ package com.markone.reminder.ui.reminder;
 
 import com.markone.reminder.Common;
 
+import java.io.Serializable;
+
 /**
  * Created by Neeraj on 03-Nov-19
  */
-public class Reminder {
+public class Reminder implements Serializable {
 
     private String id = "";
     private String name = "";
     private String details = "";
     private Common.Status status = Common.Status.None;
-    private Common.Frequency frequency = Common.Frequency.None;
+    private Common.Frequency frequency = Common.Frequency.Once;
 
     // start
     private int startDate_Year;
