@@ -1,7 +1,11 @@
 package com.markone.reminder.ui.reminder;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +18,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.markone.reminder.Common;
 import com.markone.reminder.R;
+import com.markone.reminder.alarm.AlarmReceiver;
 import com.markone.reminder.databinding.FragmentReminderBinding;
 
 import java.util.ArrayList;
@@ -35,6 +42,7 @@ public class ReminderFragment extends Fragment {
     private FragmentReminderBinding binding;
     private List<String> frequency;
     private int hour, min, ampm, day, year, month;
+    private AlarmManager alarmManager;
 
     private final CollectionReference reminderCollectionReference = FirebaseFirestore.getInstance()
             .collection(Common.REMINDER_DB)
@@ -44,6 +52,7 @@ public class ReminderFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        alarmManager = (AlarmManager) Objects.requireNonNull(getContext()).getSystemService(Context.ALARM_SERVICE);
         frequency = new ArrayList<String>();
         for (Common.Frequency value : Common.Frequency.values()) {
             frequency.add(value.toString());
@@ -63,6 +72,7 @@ public class ReminderFragment extends Fragment {
             reminder = (Reminder) getArguments().getSerializable("Reminder");
             updateUI();
         } else {
+            reminder = new Reminder();
             day = myCalendar.get(Calendar.DAY_OF_MONTH);
             month = myCalendar.get(Calendar.MONTH);
             year = myCalendar.get(Calendar.YEAR);
@@ -166,7 +176,65 @@ public class ReminderFragment extends Fragment {
         reminder.setStartDate_Year(year);
         reminder.setFrequency(Common.Frequency.getFrequency(binding.spinner.getSelectedItem().toString()));
 
-        documentReference.set(reminder);
+        documentReference.set(reminder).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                } else {
+                    //Todo failure
+                }
+            }
+        });
+        setAlarm();
         (Objects.requireNonNull(getActivity())).onBackPressed();
+    }
+
+    private void setAlarm() {
+
+        // chk if already set or update
+        Intent intent = new Intent(getContext(), AlarmReceiver.class);
+        intent.setAction(reminder.getId());
+        intent.putExtra(Common.REMINDER_NAME, reminder.getName());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, min);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.YEAR, year);
+
+        if (reminder.getFrequency() == Common.Frequency.Once) {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        } else {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), getFrequencyInMillis(), pendingIntent);
+        }
+    }
+
+    private long getFrequencyInMillis() {
+        switch (reminder.getFrequency()) {
+            case Every_1_Min:
+                return 60 * 1000;
+            case Every_5_Min:
+                return 5 * 60 * 1000;
+            case Every_10_Min:
+                return 10 * 60 * 1000;
+            case Every_30_Min:
+                return AlarmManager.INTERVAL_HALF_HOUR;
+            case Hourly:
+                return AlarmManager.INTERVAL_HOUR;
+            case Daily:
+                return AlarmManager.INTERVAL_DAY;
+            case Weekly:
+                return 7 * AlarmManager.INTERVAL_DAY;
+            //Todo set these
+            case Weekend:
+            case Monthly:
+            case Yearly:
+                return 0;
+        }
+        return 0;
     }
 }

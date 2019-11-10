@@ -18,10 +18,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Common {
     public static final String REMINDER_COLLECTION = "Reminders";
+    public static final String REMINDER_CHANNEL = "ReminderChannel";
+    public static final long[] VIBRATION_PATTERN = {0L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L
+            , 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L
+            , 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L};
 
     public static final String REMINDER_DB = "Reminder DB";
     //Todo remove this with actual id
     public static final String USER_ID = "Neeraj User ID";
+    public static final String REMINDER_NAME = "ReminderName";
     private static final Calendar myCalendar = Calendar.getInstance();
 
     public static Map<String, Frequency> frequencyMap = new HashMap<>();
