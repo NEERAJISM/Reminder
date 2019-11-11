@@ -161,50 +161,65 @@ public class ReminderFragment extends Fragment {
         binding.tvTimePicker.setText(Common.getFormattedTime(hour, min, ampm));
     }
 
-    private void createReminder() {
-        String id = reminder.getId();
-        DocumentReference documentReference = id.isEmpty() ? reminderCollectionReference.document() : reminderCollectionReference.document(id);
+    private boolean isValidReminder(Calendar calendar) {
+        if ("".equals(binding.etName.getText().toString().trim())) {
+            Common.viewToast(getContext(), "Invalid Reminder Name");
+            return false;
+        }
 
-        reminder.setId(documentReference.getId());
-        reminder.setName(binding.etName.getText().toString());
-        reminder.setDetails(binding.etDetails.getText().toString());
-        reminder.setStartDate_Hour(hour);
-        reminder.setStartDate_Minute(min);
-        reminder.setStartDate_ampm(ampm);
-        reminder.setStartDate_Day(day);
-        reminder.setStartDate_Month(month);
-        reminder.setStartDate_Year(year);
-        reminder.setFrequency(Common.Frequency.getFrequency(binding.spinner.getSelectedItem().toString()));
-
-        documentReference.set(reminder).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                } else {
-                    //Todo failure
-                }
-            }
-        });
-        setAlarm();
-        (Objects.requireNonNull(getActivity())).onBackPressed();
+        if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
+            Common.viewToast(getContext(), "Set reminder time in future");
+            return false;
+        }
+        return true;
     }
 
-    private void setAlarm() {
-
-        // chk if already set or update
-        Intent intent = new Intent(getContext(), AlarmReceiver.class);
-        intent.setAction(reminder.getId());
-        intent.putExtra(Common.REMINDER_NAME, reminder.getName());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
+    private void createReminder() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, min);
         calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         calendar.set(Calendar.DAY_OF_MONTH, day);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.YEAR, year);
+
+        if (isValidReminder(calendar)) {
+            String id = reminder.getId();
+            DocumentReference documentReference = id.isEmpty() ? reminderCollectionReference.document() : reminderCollectionReference.document(id);
+
+            reminder.setId(documentReference.getId());
+            reminder.setName(binding.etName.getText().toString());
+            reminder.setDetails(binding.etDetails.getText().toString());
+            reminder.setStartDate_Hour(hour);
+            reminder.setStartDate_Minute(min);
+            reminder.setStartDate_ampm(ampm);
+            reminder.setStartDate_Day(day);
+            reminder.setStartDate_Month(month);
+            reminder.setStartDate_Year(year);
+            reminder.setFrequency(Common.Frequency.getFrequency(binding.spinner.getSelectedItem().toString()));
+
+            documentReference.set(reminder).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                    } else {
+                        //Todo failure
+                    }
+                }
+            });
+            setAlarm(calendar);
+            (Objects.requireNonNull(getActivity())).onBackPressed();
+        }
+    }
+
+    private void setAlarm(Calendar calendar) {
+        // chk if already set or update
+        Intent intent = new Intent(getContext(), AlarmReceiver.class);
+        //Todo remove id if not required
+        intent.setAction(reminder.getId());
+        intent.putExtra(Common.REMINDER_NAME, reminder.getName());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         if (reminder.getFrequency() == Common.Frequency.Once) {
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);

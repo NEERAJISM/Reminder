@@ -1,5 +1,6 @@
 package com.markone.reminder.service;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -19,26 +20,61 @@ import com.markone.reminder.Common;
 import com.markone.reminder.MainActivity;
 import com.markone.reminder.R;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+
 public class VibrateService extends Service {
     private static final String ACTION_STOP_SERVICE = "StopService";
     private static final String NOTIFICATION_ID = "NotificationId";
+
+    private Notification foregroundNotification;
+    private Map<String, Notification> idNotificationMap = new HashMap<>();
+    private Map<Notification, String> notificationIdMap = new HashMap<>();
+    private LinkedBlockingQueue<Notification> backgroundNotifications = new LinkedBlockingQueue<>();
 
     private Vibrator vibrator;
     private NotificationManager notificationManager;
 
     @Override
     public void onCreate() {
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         setNotificationChannel();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        int uniqueId = (int) System.currentTimeMillis();
         if (ACTION_STOP_SERVICE.equals(intent.getAction())) {
-            notificationManager.cancel(intent.getStringExtra(NOTIFICATION_ID), 0);
-            vibrator.cancel();
-            stopSelf();
+            String nId = intent.getStringExtra(NOTIFICATION_ID);
+
+            if (nId.equals(notificationIdMap.get(foregroundNotification))) {
+                if (!backgroundNotifications.isEmpty()) {
+                    try {
+                        foregroundNotification = backgroundNotifications.take();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    notificationManager.cancel(notificationIdMap.get(foregroundNotification), 0);
+                    startForeground(uniqueId, foregroundNotification);
+                } else {
+                    foregroundNotification = null;
+                }
+            } else {
+                notificationManager.cancel(nId, 0);
+                backgroundNotifications.remove(idNotificationMap.get(nId));
+            }
+
+            notificationIdMap.remove(idNotificationMap.get(nId));
+            idNotificationMap.remove(nId);
+
+            // All empty
+            if (idNotificationMap.isEmpty()) {
+                vibrator.cancel();
+                stopForeground(true);
+                stopSelf();
+            }
             return super.onStartCommand(intent, flags, startId);
         }
 
@@ -47,30 +83,43 @@ public class VibrateService extends Service {
 
         // Open Main Activity
         Intent open = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntentActivity = PendingIntent.getActivity(this, 0, open, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntentActivity = PendingIntent.getActivity(this, uniqueId, open, PendingIntent.FLAG_CANCEL_CURRENT);
 
         // Cancel Notification & update Reminder
         Intent cancel = new Intent(this, VibrateService.class);
         cancel.setAction(ACTION_STOP_SERVICE);
-        cancel.putExtra("NotificationId", reminderId);
-        PendingIntent pendingIntentDone = PendingIntent.getService(this, 0, cancel, PendingIntent.FLAG_CANCEL_CURRENT);
+        cancel.putExtra(NOTIFICATION_ID, reminderId);
+        PendingIntent pendingIntentDone = PendingIntent.getService(this, uniqueId, cancel, PendingIntent.FLAG_CANCEL_CURRENT);
 
         //Send Notification
-        NotificationCompat.Builder notification = new NotificationCompat.Builder(this, Common.REMINDER_CHANNEL);
-        notification.setSmallIcon(R.drawable.ic_reminder)
+        Notification notification = new NotificationCompat.Builder(this, Common.REMINDER_CHANNEL)
+                .setSmallIcon(R.drawable.ic_reminder)
                 .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_app_icon))
                 .setContentTitle("Reminder")
-                .setContentInfo(reminderName)
+                .setContentText(reminderName)
                 .setWhen(System.currentTimeMillis())
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOngoing(true)
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .addAction(R.drawable.ic_tick, "Mark Complete", pendingIntentDone)
                 .addAction(R.drawable.ic_snooze, "Snooze", pendingIntentDone)
-                .setContentIntent(pendingIntentActivity);
+                .setContentIntent(pendingIntentActivity).build();
 
-        notificationManager.notify(reminderId, 0, notification.build());
-        startVibration();
+        idNotificationMap.put(reminderId, notification);
+        notificationIdMap.put(notification, reminderId);
+
+        try {
+            if (foregroundNotification == null) {
+                foregroundNotification = notification;
+                startForeground(uniqueId, foregroundNotification);
+                startVibration();
+            } else {
+                backgroundNotifications.put(notification);
+                notificationManager.notify(reminderId, 0, notification);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -98,9 +147,9 @@ public class VibrateService extends Service {
     private void startVibration() {
         if (vibrator != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createWaveform(Common.VIBRATION_PATTERN, 0));
+                vibrator.vibrate(VibrationEffect.createWaveform(Common.VIBRATION_PATTERN, 1));
             } else {
-                vibrator.vibrate(Common.VIBRATION_PATTERN, -1);
+                vibrator.vibrate(Common.VIBRATION_PATTERN, 1);
             }
         }
     }

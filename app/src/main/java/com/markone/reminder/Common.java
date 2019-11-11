@@ -19,9 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Common {
     public static final String REMINDER_COLLECTION = "Reminders";
     public static final String REMINDER_CHANNEL = "ReminderChannel";
-    public static final long[] VIBRATION_PATTERN = {0L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L
-            , 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L
-            , 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L, 2000L, 500L};
+    public static final long[] VIBRATION_PATTERN = {0L, 2000L, 500L};
 
     public static final String REMINDER_DB = "Reminder DB";
     //Todo remove this with actual id
