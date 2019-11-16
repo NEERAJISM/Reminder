@@ -185,5 +185,15 @@
             android:layout_marginTop="15dp"
             android:text="Set Reminder"
             app:layout_constraintTop_toBottomOf="@+id/cl_spinner" />
+
+        <Button
+            android:id="@+id/bt_delete_reminder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="#e53935"
+            android:text="Delete Reminder"
+            android:textColor="#fafafa"
+            app:layout_constraintTop_toBottomOf="@+id/bt_create_reminder" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

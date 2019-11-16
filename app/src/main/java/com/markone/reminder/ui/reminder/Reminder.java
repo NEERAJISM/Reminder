@@ -21,12 +21,13 @@ public class Reminder implements Serializable {
     private int startDate_Day;
     private int startDate_Hour;
     private int startDate_Minute;
-    private int startDate_ampm;
 
-    // frequency
-    private int frequencyDays;
-    private int frequencyHours;
-    private int frequencyMinutes;
+    // snooze
+    private int snoozeDate_Year;
+    private int snoozeDate_Month;
+    private int snoozeDate_Day;
+    private int snoozeDate_Hour;
+    private int snoozeDate_Minute;
 
     public String getName() {
         return name;
@@ -92,30 +93,6 @@ public class Reminder implements Serializable {
         this.startDate_Minute = startDate_Minute;
     }
 
-    public int getFrequencyDays() {
-        return frequencyDays;
-    }
-
-    public void setFrequencyDays(int frequencyDays) {
-        this.frequencyDays = frequencyDays;
-    }
-
-    public int getFrequencyHours() {
-        return frequencyHours;
-    }
-
-    public void setFrequencyHours(int frequencyHours) {
-        this.frequencyHours = frequencyHours;
-    }
-
-    public int getFrequencyMinutes() {
-        return frequencyMinutes;
-    }
-
-    public void setFrequencyMinutes(int frequencyMinutes) {
-        this.frequencyMinutes = frequencyMinutes;
-    }
-
     public Common.Frequency getFrequency() {
         return frequency;
     }
@@ -124,20 +101,52 @@ public class Reminder implements Serializable {
         this.frequency = frequency;
     }
 
-
-    public int getStartDate_ampm() {
-        return startDate_ampm;
-    }
-
-    public void setStartDate_ampm(int startDate_ampm) {
-        this.startDate_ampm = startDate_ampm;
-    }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+
+    public int getSnoozeDate_Year() {
+        return snoozeDate_Year;
+    }
+
+    public void setSnoozeDate_Year(int snoozeDate_Year) {
+        this.snoozeDate_Year = snoozeDate_Year;
+    }
+
+    public int getSnoozeDate_Month() {
+        return snoozeDate_Month;
+    }
+
+    public void setSnoozeDate_Month(int snoozeDate_Month) {
+        this.snoozeDate_Month = snoozeDate_Month;
+    }
+
+    public int getSnoozeDate_Day() {
+        return snoozeDate_Day;
+    }
+
+    public void setSnoozeDate_Day(int snoozeDate_Day) {
+        this.snoozeDate_Day = snoozeDate_Day;
+    }
+
+    public int getSnoozeDate_Hour() {
+        return snoozeDate_Hour;
+    }
+
+    public void setSnoozeDate_Hour(int snoozeDate_Hour) {
+        this.snoozeDate_Hour = snoozeDate_Hour;
+    }
+
+    public int getSnoozeDate_Minute() {
+        return snoozeDate_Minute;
+    }
+
+    public void setSnoozeDate_Minute(int snoozeDate_Minute) {
+        this.snoozeDate_Minute = snoozeDate_Minute;
     }
 }

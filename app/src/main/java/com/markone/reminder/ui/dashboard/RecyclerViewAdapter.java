@@ -88,7 +88,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             tvStatus.setText(reminder.getStatus().toString());
             tvDate.setText(Common.getFormattedDate(reminder.getStartDate_Day(), reminder.getStartDate_Month(), reminder.getStartDate_Year()));
-            tvTime.setText(Common.getFormattedTime(reminder.getStartDate_Hour(), reminder.getStartDate_Minute(), reminder.getStartDate_ampm()));
+            tvTime.setText(Common.getFormattedTime(reminder.getStartDate_Hour(), reminder.getStartDate_Minute()));
 
             if (reminder.getFrequency() != Common.Frequency.Once) {
                 tvFrequency.setText(reminder.getFrequency().toString());

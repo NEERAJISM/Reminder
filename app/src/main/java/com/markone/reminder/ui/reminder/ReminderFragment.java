@@ -41,7 +41,7 @@ public class ReminderFragment extends Fragment {
     private Reminder reminder;
     private FragmentReminderBinding binding;
     private List<String> frequency;
-    private int hour, min, ampm, day, year, month;
+    private int hour, min, day, year, month;
     private AlarmManager alarmManager;
 
     private final CollectionReference reminderCollectionReference = FirebaseFirestore.getInstance()
@@ -69,16 +69,18 @@ public class ReminderFragment extends Fragment {
         }
 
         if (getArguments() != null) {
+            binding.btDeleteReminder.setVisibility(View.VISIBLE);
             reminder = (Reminder) getArguments().getSerializable("Reminder");
             updateUI();
+            setDeleteButton();
         } else {
+            binding.btDeleteReminder.setVisibility(View.INVISIBLE);
             reminder = new Reminder();
             day = myCalendar.get(Calendar.DAY_OF_MONTH);
             month = myCalendar.get(Calendar.MONTH);
             year = myCalendar.get(Calendar.YEAR);
             hour = myCalendar.get(Calendar.HOUR_OF_DAY);
             min = myCalendar.get(Calendar.MINUTE);
-            ampm = myCalendar.get(Calendar.AM_PM);
         }
 
         setDatePicker();
@@ -95,7 +97,6 @@ public class ReminderFragment extends Fragment {
         year = reminder.getStartDate_Year();
         hour = reminder.getStartDate_Hour();
         min = reminder.getStartDate_Minute();
-        ampm = reminder.getStartDate_ampm();
     }
 
     private void setCreateButton() {
@@ -103,6 +104,15 @@ public class ReminderFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 createReminder();
+            }
+        });
+    }
+
+    private void setDeleteButton() {
+        binding.btDeleteReminder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteReminder();
             }
         });
     }
@@ -149,7 +159,6 @@ public class ReminderFragment extends Fragment {
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                                 hour = hourOfDay;
                                 min = minute;
-                                ampm = hourOfDay >= 12 ? Calendar.PM : Calendar.AM;
                                 updateTimePicker();
                             }
                         }, hour, min, false).show();
@@ -158,7 +167,7 @@ public class ReminderFragment extends Fragment {
     }
 
     private void updateTimePicker() {
-        binding.tvTimePicker.setText(Common.getFormattedTime(hour, min, ampm));
+        binding.tvTimePicker.setText(Common.getFormattedTime(hour, min));
     }
 
     private boolean isValidReminder(Calendar calendar) {
@@ -193,7 +202,6 @@ public class ReminderFragment extends Fragment {
             reminder.setDetails(binding.etDetails.getText().toString());
             reminder.setStartDate_Hour(hour);
             reminder.setStartDate_Minute(min);
-            reminder.setStartDate_ampm(ampm);
             reminder.setStartDate_Day(day);
             reminder.setStartDate_Month(month);
             reminder.setStartDate_Year(year);
@@ -214,42 +222,27 @@ public class ReminderFragment extends Fragment {
     }
 
     private void setAlarm(Calendar calendar) {
-        // chk if already set or update
-        Intent intent = new Intent(getContext(), AlarmReceiver.class);
-        //Todo remove id if not required
-        intent.setAction(reminder.getId());
-        intent.putExtra(Common.REMINDER_NAME, reminder.getName());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-        if (reminder.getFrequency() == Common.Frequency.Once) {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        } else {
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), getFrequencyInMillis(), pendingIntent);
-        }
+        PendingIntent pendingIntent = getPendingIntent();
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
-    private long getFrequencyInMillis() {
-        switch (reminder.getFrequency()) {
-            case Every_1_Min:
-                return 60 * 1000;
-            case Every_5_Min:
-                return 5 * 60 * 1000;
-            case Every_10_Min:
-                return 10 * 60 * 1000;
-            case Every_30_Min:
-                return AlarmManager.INTERVAL_HALF_HOUR;
-            case Hourly:
-                return AlarmManager.INTERVAL_HOUR;
-            case Daily:
-                return AlarmManager.INTERVAL_DAY;
-            case Weekly:
-                return 7 * AlarmManager.INTERVAL_DAY;
-            //Todo set these
-            case Weekend:
-            case Monthly:
-            case Yearly:
-                return 0;
-        }
-        return 0;
+    private void deleteReminder() {
+        //Delete alarm
+        PendingIntent pendingIntent = getPendingIntent();
+        alarmManager.cancel(pendingIntent);
+
+        //Delete entry
+        reminderCollectionReference.document(reminder.getId()).delete();
+
+        Common.viewToast(getContext(), "Reminder Deleted successfully!!");
+        (Objects.requireNonNull(getActivity())).onBackPressed();
+    }
+
+    private PendingIntent getPendingIntent() {
+        // chk if already set or update
+        Intent intent = new Intent(getContext(), AlarmReceiver.class);
+        intent.setAction(reminder.getId());
+        intent.putExtra(Common.REMINDER_NAME, reminder.getName());
+        return PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 }

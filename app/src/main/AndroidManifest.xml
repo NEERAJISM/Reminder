@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <receiver android:name=".alarm.AlarmReceiver" />
-        <service android:name=".service.VibrateService" />
+        <service android:name=".service.NotificationService" />
     </application>
 
 </manifest>

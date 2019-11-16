@@ -37,11 +37,11 @@ public class Common {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
-    public static String getFormattedTime(int hour, int min, int ampm) {
+    public static String getFormattedTime(int hour, int min) {
+        String ampmString = hour < 12 ? "AM" : "PM";
         hour = (hour > 12 ? hour - 12 : hour);
-        String hourString = (hour < 10 ? "0" : "") + hour;
+        String hourString = (hour == 0) ? "12" : ((hour < 10 ? "0" : "") + hour);
         String minString = (min < 10 ? "0" : "") + min;
-        String ampmString = ampm == Calendar.AM ? "AM" : "PM";
         return new StringBuilder(hourString).append(" : ").append(minString).append(" ").append(ampmString).toString();
     }
 
@@ -68,7 +68,6 @@ public class Common {
         Hourly("Hourly"),
         Daily("Daily"),
         Weekly("Weekly"),
-        Weekend("Weekend"),
         Monthly("Monthly"),
         Yearly("Yearly");
 
@@ -99,4 +98,41 @@ public class Common {
             return frequency;
         }
     }
+
+    public static void updateCalendar(Calendar calendar, Frequency frequency) {
+        switch (frequency) {
+            case Every_1_Min:
+                calendar.add(Calendar.MINUTE, 1);
+                break;
+            case Every_5_Min:
+                calendar.add(Calendar.MINUTE, 5);
+                break;
+            case Every_10_Min:
+                calendar.add(Calendar.MINUTE, 10);
+                break;
+            case Every_30_Min:
+                calendar.add(Calendar.MINUTE, 30);
+                break;
+            case Hourly:
+                calendar.add(Calendar.HOUR_OF_DAY, 1);
+                break;
+            case Daily:
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                break;
+            case Weekly:
+                calendar.add(Calendar.WEEK_OF_MONTH, 1);
+                break;
+            case Monthly:
+                calendar.add(Calendar.MONTH, 1);
+                break;
+            case Yearly:
+                calendar.add(Calendar.YEAR, 1);
+                break;
+        }
+    }
+
+    public static boolean isBlank(String s) {
+        return (s == null || "".equals(s.trim()));
+    }
+
 }
