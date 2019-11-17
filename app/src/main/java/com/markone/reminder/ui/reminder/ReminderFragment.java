@@ -227,6 +227,8 @@ public class ReminderFragment extends Fragment {
     }
 
     private void deleteReminder() {
+        //Todo Delete notification for already running
+
         //Delete alarm
         PendingIntent pendingIntent = getPendingIntent();
         alarmManager.cancel(pendingIntent);

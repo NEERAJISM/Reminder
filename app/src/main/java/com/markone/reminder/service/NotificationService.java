@@ -78,12 +78,13 @@ public class NotificationService extends Service {
         Intent open = new Intent(this, MainActivity.class);
         PendingIntent pendingIntentActivity = PendingIntent.getActivity(this, uniqueId, open, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        // Todo Done & snooze Reminder
+        // Done
         Intent done = new Intent(this, NotificationService.class);
         done.setAction(ACTION_STOP_SERVICE);
         done.putExtra(NOTIFICATION_ID, reminderId);
         PendingIntent pendingIntentDone = PendingIntent.getService(this, uniqueId, done, PendingIntent.FLAG_CANCEL_CURRENT);
 
+        // Snooze
         Intent snooze = new Intent(this, NotificationService.class);
         snooze.setAction(ACTION_SNOOZE_SERVICE);
         snooze.putExtra(NOTIFICATION_ID, reminderId);
@@ -171,6 +172,7 @@ public class NotificationService extends Service {
                         calendar.set(Calendar.MONTH, reminder.getStartDate_Month());
                         calendar.set(Calendar.YEAR, reminder.getStartDate_Year());
 
+                        // Set Next start date
                         if (reminder.getSnoozeDate_Year() == 0 && Common.Frequency.Once != reminder.getFrequency()) {
                             Common.updateCalendar(calendar, reminder.getFrequency());
                             reminder.setStartDate_Hour(calendar.get(Calendar.HOUR_OF_DAY));
@@ -203,6 +205,11 @@ public class NotificationService extends Service {
                         } else if (Common.Frequency.Once != reminder.getFrequency()) {
                             reminder.setSnoozeDate_Year(0);
                             setAlarm(calendar, reminder.getId(), reminder.getName());
+                        }
+
+                        // Mark as Done
+                        if (!isSnooze && Common.Frequency.Once == reminder.getFrequency()) {
+                            reminder.setStatus(Common.Status.Done);
                         }
 
                         reminderCollectionReference.document(reminder.getId()).set(reminder);
