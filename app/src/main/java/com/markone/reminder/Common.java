@@ -96,7 +96,7 @@ public class Common {
     }
 
     public enum Status {
-        None, Low, Med, High, Done, Missed
+        Low, Med, High, Done
     }
 
     public enum Frequency {

@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.RadioButton;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
@@ -66,6 +68,7 @@ public class ReminderFragment extends Fragment {
             binding = FragmentReminderBinding.inflate(inflater, container, false);
             binding.spinner.setAdapter(new ArrayAdapter<>(getContext(), R.layout.spinner_item, frequency));
             setCreateButton();
+            setRadioButtons();
         }
 
         if (getArguments() != null) {
@@ -85,7 +88,18 @@ public class ReminderFragment extends Fragment {
 
         setDatePicker();
         setTimePicker();
+        updatePriority();
         return binding.getRoot();
+    }
+
+    private void updatePriority() {
+        if (reminder.getStatus() == Common.Status.High) {
+            binding.rbPriorityHigh.setChecked(true);
+        } else if (reminder.getStatus() == Common.Status.Med) {
+            binding.rbPriorityMed.setChecked(true);
+        } else {
+            binding.rbPriorityLow.setChecked(true);
+        }
     }
 
     private void updateUI() {
@@ -206,6 +220,7 @@ public class ReminderFragment extends Fragment {
             reminder.setStartDate_Month(month);
             reminder.setStartDate_Year(year);
             reminder.setFrequency(Common.Frequency.getFrequency(binding.spinner.getSelectedItem().toString()));
+            reminder.setStatus(getPriority());
 
             documentReference.set(reminder).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
@@ -219,6 +234,16 @@ public class ReminderFragment extends Fragment {
             setAlarm(calendar);
             (Objects.requireNonNull(getActivity())).onBackPressed();
         }
+    }
+
+    private Common.Status getPriority() {
+        if (binding.rbPriorityMed.isChecked()) {
+            return Common.Status.Med;
+        }
+        if (binding.rbPriorityHigh.isChecked()) {
+            return Common.Status.High;
+        }
+        return Common.Status.Low;
     }
 
     private void setAlarm(Calendar calendar) {
@@ -246,5 +271,38 @@ public class ReminderFragment extends Fragment {
         intent.setAction(reminder.getId());
         intent.putExtra(Common.REMINDER_NAME, reminder.getName());
         return PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+    }
+
+    private void setRadioButtons() {
+
+        binding.rbPriorityLow.setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    binding.rbPriorityMed.setChecked(false);
+                    binding.rbPriorityHigh.setChecked(false);
+                }
+            }
+        });
+
+        binding.rbPriorityMed.setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    binding.rbPriorityLow.setChecked(false);
+                    binding.rbPriorityHigh.setChecked(false);
+                }
+            }
+        });
+
+        binding.rbPriorityHigh.setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    binding.rbPriorityLow.setChecked(false);
+                    binding.rbPriorityMed.setChecked(false);
+                }
+            }
+        });
     }
 }

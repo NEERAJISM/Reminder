@@ -56,7 +56,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public class MyRecyclerViewHolder extends RecyclerView.ViewHolder {
-        TextView tvStatus;
+        ImageView ivStatus;
         TextView tvDate;
         TextView tvTime;
         TextView tvFrequency;
@@ -71,7 +71,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             super(itemView);
             cardView = itemView.findViewById(R.id.card);
             ivFrequency = itemView.findViewById(R.id.iv_frequency);
-            tvStatus = itemView.findViewById(R.id.tv_status);
+            ivStatus = itemView.findViewById(R.id.iv_status);
             tvDate = itemView.findViewById(R.id.tv_date);
             tvTime = itemView.findViewById(R.id.tv_time);
             tvFrequency = itemView.findViewById(R.id.tv_frequency);
@@ -83,10 +83,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             mCurrentPosition = position;
 
             final Reminder reminder = reminderList.get(position);
-
             tvName.setText(reminder.getName());
 
-            tvStatus.setText(reminder.getStatus().toString());
+            Common.Status status = reminder.getStatus();
+            if (status == Common.Status.Low) {
+                ivStatus.setImageResource(R.drawable.ic_warning_low);
+            } else if (status == Common.Status.Med) {
+                ivStatus.setImageResource(R.drawable.ic_warning_med);
+            } else if (status == Common.Status.High) {
+                ivStatus.setImageResource(R.drawable.ic_warning_high);
+            } else {
+                ivStatus.setImageResource(R.drawable.ic_tick);
+            }
+
             tvDate.setText(Common.getFormattedDate(reminder.getStartDate_Day(), reminder.getStartDate_Month(), reminder.getStartDate_Year()));
             tvTime.setText(Common.getFormattedTime(reminder.getStartDate_Hour(), reminder.getStartDate_Minute()));
 

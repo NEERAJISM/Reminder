@@ -27,38 +27,25 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/tv_priority">
-
-            <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/rb_priority_none"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="None"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tv_priority"
+            app:layout_goneMarginBottom="10dp">
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/rb_priority_low"
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Low"
-                app:layout_constraintEnd_toStartOf="@id/rb_priority_med"
-                app:layout_constraintStart_toEndOf="@id/rb_priority_none"
-
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/rb_priority_med"
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Med"
                 app:layout_constraintEnd_toStartOf="@id/rb_priority_high"
                 app:layout_constraintStart_toEndOf="@id/rb_priority_low"
-
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatRadioButton
@@ -70,7 +57,6 @@
                 app:layout_constraintStart_toEndOf="@id/rb_priority_med"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         <EditText
             android:id="@+id/et_name"
