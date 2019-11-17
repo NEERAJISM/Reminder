@@ -7,10 +7,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.markone.reminder.ui.reminder.Reminder;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -26,6 +28,44 @@ public class Common {
     public static final String USER_ID = "Neeraj User ID";
     public static final String REMINDER_NAME = "ReminderName";
     private static final Calendar myCalendar = Calendar.getInstance();
+
+    public static final Comparator<Reminder> reminderComparator = new Comparator<Reminder>() {
+        @Override
+        public int compare(Reminder o1, Reminder o2) {
+
+            if (o1.getStartDate_Year() < o2.getStartDate_Year()) {
+                return -1;
+            } else if (o1.getStartDate_Year() > o2.getStartDate_Year()) {
+                return 1;
+            }
+
+            if (o1.getStartDate_Month() < o2.getStartDate_Month()) {
+                return -1;
+            } else if (o1.getStartDate_Month() > o2.getStartDate_Month()) {
+                return 1;
+            }
+
+            if (o1.getStartDate_Day() < o2.getStartDate_Day()) {
+                return -1;
+            } else if (o1.getStartDate_Day() > o2.getStartDate_Day()) {
+                return 1;
+            }
+
+            if (o1.getStartDate_Hour() < o2.getStartDate_Hour()) {
+                return -1;
+            } else if (o1.getStartDate_Hour() > o2.getStartDate_Hour()) {
+                return 1;
+            }
+
+            if (o1.getStartDate_Minute() < o2.getStartDate_Minute()) {
+                return -1;
+            } else if (o1.getStartDate_Minute() > o2.getStartDate_Minute()) {
+                return 1;
+            }
+
+            return 1;
+        }
+    };
 
     public static Map<String, Frequency> frequencyMap = new HashMap<>();
 
@@ -133,6 +173,16 @@ public class Common {
 
     public static boolean isBlank(String s) {
         return (s == null || "".equals(s.trim()));
+    }
+
+    public static void updateCalendarFromReminder(Calendar calendar, Reminder reminder) {
+        calendar.set(Calendar.HOUR_OF_DAY, reminder.getStartDate_Hour());
+        calendar.set(Calendar.MINUTE, reminder.getStartDate_Minute());
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.DAY_OF_MONTH, reminder.getStartDate_Day());
+        calendar.set(Calendar.MONTH, reminder.getStartDate_Month());
+        calendar.set(Calendar.YEAR, reminder.getStartDate_Year());
     }
 
 }
