@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/nav_dashboard"
-        android:name="com.markone.reminder.ui.dashboard.DashboardFragment"
+        android:name="com.markone.reminder.ui.dashboard.TabDashboard"
         android:label="@string/menu_dashboard"
-        tools:layout="@layout/fragment_dashboard">
+        tools:layout="@layout/fragment_tab_dashboard">
         <action
             android:id="@+id/action_nav_dashboard_to_nav_reminder"
             app:destination="@id/nav_reminder" />

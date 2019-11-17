@@ -51,7 +51,19 @@ public class DashboardFragment extends Fragment {
     private RecyclerViewAdapter upcomingAdapter;
     private List<Reminder> upcomingReminders = new ArrayList<>();
 
+    private List<Reminder> doneReminders = new ArrayList<>();
+
     private FloatingActionButton floatingActionButton;
+
+    private DoneDashboardFragment doneDashboardFragment;
+
+    DashboardFragment() {
+    }
+
+    DashboardFragment(DoneDashboardFragment doneDashboardFragment) {
+        this.doneDashboardFragment = doneDashboardFragment;
+    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,6 +111,7 @@ public class DashboardFragment extends Fragment {
                 if (task.isSuccessful() && task.getResult() != null) {
                     reminders.clear();
                     upcomingReminders.clear();
+                    doneReminders.clear();
 
                     Calendar calendar = Calendar.getInstance();
                     calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -111,31 +124,39 @@ public class DashboardFragment extends Fragment {
 
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                         Reminder reminder = documentSnapshot.toObject(Reminder.class);
-                        Common.updateCalendarFromReminder(calendar, reminder);
+                        if (reminder.getStatus() == Common.Status.Done) {
+                            doneReminders.add(reminder);
+                            continue;
+                        }
 
+                        Common.updateCalendarFromReminder(calendar, reminder);
                         if (today > calendar.getTimeInMillis()) {
                             reminders.add(reminder);
                         } else {
                             upcomingReminders.add(reminder);
                         }
-
                     }
 
-                    Collections.sort(reminders, Common.reminderComparator);
-                    Collections.sort(upcomingReminders, Common.reminderComparator);
+                    if (reminders.size() > 1) {
+                        Collections.sort(reminders, Common.reminderComparator);
+                    }
+                    if (upcomingReminders.size() > 1) {
+                        Collections.sort(upcomingReminders, Common.reminderComparator);
+                    }
 
                     mAdapter.updateReminders(reminders);
                     mAdapter.notifyDataSetChanged();
 
                     upcomingAdapter.updateReminders(upcomingReminders);
                     upcomingAdapter.notifyDataSetChanged();
+                    doneDashboardFragment.updateReminders(doneReminders);
                 } else {
                     Common.viewToast(getContext(), "Error while getting reminders");
                 }
 
                 fragmentDashboardBinding.tvNoReminders.setVisibility((reminders.size() == 0 && upcomingReminders.size() == 0) ? View.VISIBLE : View.INVISIBLE);
-                fragmentDashboardBinding.tvToday.setVisibility((reminders.size() != 0) ? View.VISIBLE : View.INVISIBLE);
-                fragmentDashboardBinding.tvUpcoming.setVisibility((upcomingReminders.size() != 0) ? View.VISIBLE : View.INVISIBLE);
+                fragmentDashboardBinding.tvToday.setVisibility((reminders.size() != 0) ? View.VISIBLE : View.GONE);
+                fragmentDashboardBinding.tvUpcoming.setVisibility((upcomingReminders.size() != 0) ? View.VISIBLE : View.GONE);
             }
         });
     }

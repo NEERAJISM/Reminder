@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -32,22 +32,22 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_today" />
 
             <TextView
-                android:id="@+id/tv_upcoming"
+                android:id="@+id/tv_earlier"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:gravity="center"
-                android:text="Upcoming"
+                android:text="Earlier"
                 android:textSize="20dp"
                 android:textStyle="italic|bold"
                 android:visibility="invisible"
                 app:layout_constraintTop_toBottomOf="@id/rv_reminders" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_upcoming_reminders"
+                android:id="@+id/rv_earlier_reminders"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/tv_upcoming" />
+                app:layout_constraintTop_toBottomOf="@id/tv_earlier" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
@@ -56,16 +56,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="No Reminders set!!"
+        android:text="No Reminders Completed Yet!!"
         android:textSize="20dp"
         android:textStyle="italic"
         android:visibility="invisible" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_popup_reminder" />
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

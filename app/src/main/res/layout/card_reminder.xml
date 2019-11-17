@@ -80,11 +80,12 @@
             </LinearLayout>
 
             <TextView
+                android:padding="5dp"
                 android:id="@+id/tv_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Reminder Title"
-                android:textSize="30dp" />
+                android:textSize="25dp" />
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
