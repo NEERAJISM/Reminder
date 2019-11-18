@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -90,9 +91,19 @@ public class DashboardFragment extends Fragment {
             upcomingRecyclerView = fragmentDashboardBinding.rvUpcomingReminders;
             upcomingRecyclerView.setLayoutManager(upcomingLayoutManager);
             upcomingRecyclerView.setAdapter(upcomingAdapter);
+            setSwipeFreshLayout();
         }
         getReminders();
         return fragmentDashboardBinding.getRoot();
+    }
+
+    private void setSwipeFreshLayout() {
+        fragmentDashboardBinding.swipeFreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getReminders();
+            }
+        });
     }
 
     private void setFloatingButtonAction() {
@@ -105,6 +116,7 @@ public class DashboardFragment extends Fragment {
     }
 
     private void getReminders() {
+        fragmentDashboardBinding.swipeFreshLayout.setRefreshing(true);
         reminderCollectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull final Task<QuerySnapshot> task) {
@@ -157,6 +169,7 @@ public class DashboardFragment extends Fragment {
                 fragmentDashboardBinding.tvNoReminders.setVisibility((reminders.size() == 0 && upcomingReminders.size() == 0) ? View.VISIBLE : View.INVISIBLE);
                 fragmentDashboardBinding.tvToday.setVisibility((reminders.size() != 0) ? View.VISIBLE : View.GONE);
                 fragmentDashboardBinding.tvUpcoming.setVisibility((upcomingReminders.size() != 0) ? View.VISIBLE : View.GONE);
+                fragmentDashboardBinding.swipeFreshLayout.setRefreshing(false);
             }
         });
     }

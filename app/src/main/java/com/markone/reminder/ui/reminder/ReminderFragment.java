@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -89,7 +90,14 @@ public class ReminderFragment extends Fragment {
         setDatePicker();
         setTimePicker();
         updatePriority();
+        requestKeyboard();
         return binding.getRoot();
+    }
+
+    private void requestKeyboard() {
+        binding.etName.requestFocus();
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     private void updatePriority() {
