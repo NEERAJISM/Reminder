@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -20,7 +22,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.markone.reminder.Common;
-import com.markone.reminder.MainActivity;
 import com.markone.reminder.R;
 import com.markone.reminder.databinding.FragmentDashboardBinding;
 import com.markone.reminder.ui.reminder.Reminder;
@@ -29,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by Neeraj on 02-Nov-19
@@ -41,6 +41,7 @@ public class DashboardFragment extends Fragment {
             .collection(Common.REMINDER_COLLECTION);
 
     private FragmentDashboardBinding fragmentDashboardBinding;
+    private NavController navController;
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -74,6 +75,7 @@ public class DashboardFragment extends Fragment {
 
         upcomingLayoutManager = new LinearLayoutManager(getContext());
         upcomingAdapter = new RecyclerViewAdapter(getActivity(), upcomingReminders);
+        navController = NavHostFragment.findNavController(this);
     }
 
     @Nullable
@@ -110,7 +112,7 @@ public class DashboardFragment extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity) Objects.requireNonNull(getActivity())).getNavController().navigate(R.id.nav_reminder);
+                navController.navigate(R.id.nav_reminder);
             }
         });
     }

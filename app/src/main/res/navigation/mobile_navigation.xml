@@ -9,29 +9,16 @@
         android:id="@+id/nav_dashboard"
         android:name="com.markone.reminder.ui.dashboard.TabDashboard"
         android:label="@string/menu_dashboard"
-        tools:layout="@layout/fragment_tab_dashboard">
-        <action
-            android:id="@+id/action_nav_dashboard_to_nav_reminder"
-            app:destination="@id/nav_reminder" />
-        <action
-            android:id="@+id/action_nav_dashboard_to_nav_slideshow"
-            app:destination="@id/nav_slideshow" />
-        <action
-            android:id="@+id/action_nav_dashboard_to_nav_share"
-            app:destination="@id/nav_share" />
-        <action
-            android:id="@+id/action_nav_dashboard_to_nav_tools"
-            app:destination="@id/nav_tools" />
-    </fragment>
+        tools:layout="@layout/fragment_tab_dashboard" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
+        android:id="@+id/nav_tutorial"
         android:name="com.markone.reminder.ui.tutorial.TutorialFragment"
         android:label="@string/menu_tutorial"
         tools:layout="@layout/fragment_tutorial" />
 
     <fragment
-        android:id="@+id/nav_tools"
+        android:id="@+id/nav_settings"
         android:name="com.markone.reminder.ui.settings.SettingsFragment"
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" />
