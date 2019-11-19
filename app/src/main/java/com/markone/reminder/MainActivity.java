@@ -66,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         int id = menuItem.getItemId();
         switch (id) {
+            case R.id.menu_new_reminder:
+                navController.navigate(R.id.nav_reminder);
+                break;
             case R.id.menu_settings:
                 navController.navigate(R.id.nav_settings);
                 break;

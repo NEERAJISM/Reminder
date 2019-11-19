@@ -5,6 +5,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/menu_new_reminder"
+            android:icon="@drawable/ic_reminder"
+            android:title="Set Reminder" />
+        <item
             android:id="@+id/menu_tutorial"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/menu_tutorial" />

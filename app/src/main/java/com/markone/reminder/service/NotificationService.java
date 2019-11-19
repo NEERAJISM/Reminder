@@ -28,11 +28,15 @@ import com.markone.reminder.MainActivity;
 import com.markone.reminder.R;
 import com.markone.reminder.alarm.AlarmReceiver;
 import com.markone.reminder.ui.reminder.Reminder;
+import com.markone.reminder.ui.settings.SettingsFragment;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static com.markone.reminder.Common.Frequency.Every_1_Min;
+import static com.markone.reminder.Common.Frequency.getFrequency;
 
 public class NotificationService extends Service {
     private static final String ACTION_STOP_SERVICE = "StopService";
@@ -154,6 +158,8 @@ public class NotificationService extends Service {
 
     private void updateReminder(String nId, final boolean isSnooze) {
         //ToDo get snooze time
+        final Common.Frequency snoozeFrequency = getFrequency(getSharedPreferences(SettingsFragment.SETTING_FILE, Context.MODE_PRIVATE)
+                .getString(SettingsFragment.SNOOZE_SETTING, Every_1_Min.toString()));
 
         //Decide next snooze / reminder time whichever is less (chk if no next reminder time)
         reminderCollectionReference.document(nId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -191,7 +197,7 @@ public class NotificationService extends Service {
                                 snoozeCalendar.set(Calendar.MONTH, reminder.getSnoozeDate_Month());
                                 snoozeCalendar.set(Calendar.YEAR, reminder.getSnoozeDate_Year());
                             }
-                            snoozeCalendar.add(Calendar.MINUTE, 1);
+                            Common.updateCalendar(snoozeCalendar, snoozeFrequency);
                         }
 
                         if (isSnooze && (Common.Frequency.Once == reminder.getFrequency() || snoozeCalendar.getTimeInMillis() < calendar.getTimeInMillis())) {

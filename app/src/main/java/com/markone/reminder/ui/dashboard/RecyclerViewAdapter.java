@@ -100,7 +100,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             tvTime.setText(Common.getFormattedTime(reminder.getStartDate_Hour(), reminder.getStartDate_Minute()));
 
             if (reminder.getFrequency() != Common.Frequency.Once) {
+                ivFrequency.setVisibility(View.VISIBLE);
                 tvFrequency.setText(reminder.getFrequency().toString());
+                tvFrequency.setVisibility(View.VISIBLE);
             } else {
                 ivFrequency.setVisibility(View.INVISIBLE);
                 tvFrequency.setVisibility(View.INVISIBLE);
