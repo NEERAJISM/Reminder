@@ -1,6 +1,7 @@
 package com.markone.reminder.ui.settings;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +14,14 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.markone.reminder.Common;
+import com.markone.reminder.LoginActivity;
 import com.markone.reminder.R;
 import com.markone.reminder.databinding.FragmentSettingsBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.markone.reminder.Common.Frequency;
 import static com.markone.reminder.Common.Frequency.Every_10_Min;
@@ -63,7 +67,13 @@ public class SettingsFragment extends Fragment {
                 getGoogleSignInClient(getActivity()).signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        //Todo Launch from start
+                        if (task.isSuccessful()) {
+                            Common.viewToast(getContext(), "Logged out successfully!!");
+                            startActivity(new Intent(getContext(), LoginActivity.class));
+                            Objects.requireNonNull(getActivity()).finish();
+                        } else {
+                            Common.viewToast(getContext(), "Unable to logout!!");
+                        }
                     }
                 });
             }

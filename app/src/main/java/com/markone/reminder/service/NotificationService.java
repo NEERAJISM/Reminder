@@ -24,8 +24,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.markone.reminder.Common;
-import com.markone.reminder.MainActivity;
 import com.markone.reminder.R;
+import com.markone.reminder.ReminderActivity;
 import com.markone.reminder.alarm.AlarmReceiver;
 import com.markone.reminder.ui.reminder.Reminder;
 import com.markone.reminder.ui.settings.SettingsFragment;
@@ -39,9 +39,9 @@ import static com.markone.reminder.Common.Frequency.Every_1_Min;
 import static com.markone.reminder.Common.Frequency.getFrequency;
 
 public class NotificationService extends Service {
-    private static final String ACTION_STOP_SERVICE = "StopService";
-    private static final String ACTION_SNOOZE_SERVICE = "SnoozeService";
-    private static final String NOTIFICATION_ID = "NotificationId";
+    public static final String ACTION_STOP_SERVICE = "StopService";
+    public static final String ACTION_SNOOZE_SERVICE = "SnoozeService";
+    public static final String NOTIFICATION_ID = "NotificationId";
 
     private Notification foregroundNotification;
     private Map<String, Notification> idNotificationMap = new HashMap<>();
@@ -81,7 +81,9 @@ public class NotificationService extends Service {
         String reminderName = intent.getStringExtra(Common.REMINDER_NAME);
 
         // Open Main Activity
-        Intent open = new Intent(this, MainActivity.class);
+        Intent open = new Intent(this, ReminderActivity.class);
+        open.setAction(reminderName);
+        open.putExtra(NOTIFICATION_ID, reminderId);
         PendingIntent pendingIntentActivity = PendingIntent.getActivity(this, uniqueId, open, PendingIntent.FLAG_CANCEL_CURRENT);
 
         // Done
@@ -159,7 +161,6 @@ public class NotificationService extends Service {
     }
 
     private void updateReminder(String nId, final boolean isSnooze) {
-        //ToDo get snooze time
         final Common.Frequency snoozeFrequency = getFrequency(getSharedPreferences(SettingsFragment.SETTING_FILE, Context.MODE_PRIVATE)
                 .getString(SettingsFragment.SNOOZE_SETTING, Every_1_Min.toString()));
 

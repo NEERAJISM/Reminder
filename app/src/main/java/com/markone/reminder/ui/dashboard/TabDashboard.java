@@ -14,6 +14,7 @@ import com.markone.reminder.databinding.FragmentTabDashboardBinding;
 public class TabDashboard extends Fragment {
 
     private FragmentTabDashboardBinding binding;
+    private DashboardFragment dashboardFragment;
 
     @Nullable
     @Override
@@ -22,11 +23,13 @@ public class TabDashboard extends Fragment {
             binding = FragmentTabDashboardBinding.inflate(inflater, container, false);
             TabAdapter adapter = new TabAdapter(getChildFragmentManager());
             DoneDashboardFragment doneDashboardFragment = new DoneDashboardFragment();
-            DashboardFragment dashboardFragment = new DashboardFragment(doneDashboardFragment);
+            dashboardFragment = new DashboardFragment(doneDashboardFragment);
             adapter.addFragment(dashboardFragment, "Upcoming");
             adapter.addFragment(doneDashboardFragment, "Completed");
             binding.viewPager.setAdapter(adapter);
             binding.tabLayout.setupWithViewPager(binding.viewPager);
+        } else {
+            dashboardFragment.getReminders();
         }
         return binding.getRoot();
     }

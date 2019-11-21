@@ -120,7 +120,7 @@ public class DashboardFragment extends Fragment {
         });
     }
 
-    private void getReminders() {
+    public void getReminders() {
         fragmentDashboardBinding.swipeFreshLayout.setRefreshing(true);
         reminderCollectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override

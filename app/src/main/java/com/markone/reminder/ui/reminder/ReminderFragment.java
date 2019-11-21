@@ -91,7 +91,8 @@ public class ReminderFragment extends Fragment {
         setDatePicker();
         setTimePicker();
         updatePriority();
-        requestKeyboard();
+        //Todo update this - error while second time
+//        requestKeyboard();
         return binding.getRoot();
     }
 
