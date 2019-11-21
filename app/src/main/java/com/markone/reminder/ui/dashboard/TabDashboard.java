@@ -13,18 +13,21 @@ import com.markone.reminder.databinding.FragmentTabDashboardBinding;
 
 public class TabDashboard extends Fragment {
 
+    private FragmentTabDashboardBinding binding;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        FragmentTabDashboardBinding binding = FragmentTabDashboardBinding.inflate(inflater, container, false);
-        TabAdapter adapter = new TabAdapter(getChildFragmentManager());
-
-        DoneDashboardFragment doneDashboardFragment = new DoneDashboardFragment();
-        DashboardFragment dashboardFragment = new DashboardFragment(doneDashboardFragment);
-        adapter.addFragment(dashboardFragment, "Upcoming");
-        adapter.addFragment(doneDashboardFragment, "Completed");
-        binding.viewPager.setAdapter(adapter);
-        binding.tabLayout.setupWithViewPager(binding.viewPager);
+        if (binding == null) {
+            binding = FragmentTabDashboardBinding.inflate(inflater, container, false);
+            TabAdapter adapter = new TabAdapter(getChildFragmentManager());
+            DoneDashboardFragment doneDashboardFragment = new DoneDashboardFragment();
+            DashboardFragment dashboardFragment = new DashboardFragment(doneDashboardFragment);
+            adapter.addFragment(dashboardFragment, "Upcoming");
+            adapter.addFragment(doneDashboardFragment, "Completed");
+            binding.viewPager.setAdapter(adapter);
+            binding.tabLayout.setupWithViewPager(binding.viewPager);
+        }
         return binding.getRoot();
     }
 }

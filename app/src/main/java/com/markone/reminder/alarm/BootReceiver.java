@@ -6,17 +6,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.markone.reminder.Common;
 import com.markone.reminder.service.BootService;
 
 public class BootReceiver extends BroadcastReceiver {
-
-    private final CollectionReference reminderCollectionReference = FirebaseFirestore.getInstance()
-            .collection(Common.REMINDER_DB)
-            .document(Common.USER_ID)
-            .collection(Common.REMINDER_COLLECTION);
 
     @Override
     public void onReceive(final Context context, Intent intent) {

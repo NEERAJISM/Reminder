@@ -1,5 +1,6 @@
 package com.markone.reminder.ui.dashboard;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,10 +36,7 @@ import java.util.List;
  * Created by Neeraj on 02-Nov-19
  */
 public class DashboardFragment extends Fragment {
-    private final CollectionReference reminderCollectionReference = FirebaseFirestore.getInstance()
-            .collection(Common.REMINDER_DB)
-            .document(Common.USER_ID)
-            .collection(Common.REMINDER_COLLECTION);
+    private CollectionReference reminderCollectionReference;
 
     private FragmentDashboardBinding fragmentDashboardBinding;
     private NavController navController;
@@ -76,6 +74,11 @@ public class DashboardFragment extends Fragment {
         upcomingLayoutManager = new LinearLayoutManager(getContext());
         upcomingAdapter = new RecyclerViewAdapter(getActivity(), upcomingReminders);
         navController = NavHostFragment.findNavController(this);
+
+        reminderCollectionReference = FirebaseFirestore.getInstance()
+                .collection(Common.REMINDER_DB)
+                .document(getActivity().getSharedPreferences(Common.USER_FILE, Context.MODE_PRIVATE).getString(Common.USER_ID, "UserId"))
+                .collection(Common.REMINDER_COLLECTION);
     }
 
     @Nullable

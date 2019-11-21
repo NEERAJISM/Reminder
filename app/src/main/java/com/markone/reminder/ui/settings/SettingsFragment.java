@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.markone.reminder.R;
 import com.markone.reminder.databinding.FragmentSettingsBinding;
 
@@ -23,6 +25,7 @@ import static com.markone.reminder.Common.Frequency.Every_1_Min;
 import static com.markone.reminder.Common.Frequency.Every_30_Min;
 import static com.markone.reminder.Common.Frequency.Every_5_Min;
 import static com.markone.reminder.Common.Frequency.getFrequency;
+import static com.markone.reminder.Common.getGoogleSignInClient;
 
 public class SettingsFragment extends Fragment {
     public static final String SETTING_FILE = "Settings";
@@ -48,8 +51,23 @@ public class SettingsFragment extends Fragment {
             fragmentSettingsBinding = FragmentSettingsBinding.inflate(inflater, container, false);
             fragmentSettingsBinding.spinner.setAdapter(new ArrayAdapter<>(getContext(), R.layout.spinner_item, snoozeListName));
             fragmentSettingsBinding.spinner.setSelection(snoozeListName.indexOf(snoozeFrequency.toString()));
+            setupSignOut();
         }
         return fragmentSettingsBinding.getRoot();
+    }
+
+    private void setupSignOut() {
+        fragmentSettingsBinding.btSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getGoogleSignInClient(getActivity()).signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        //Todo Launch from start
+                    }
+                });
+            }
+        });
     }
 
     @Override

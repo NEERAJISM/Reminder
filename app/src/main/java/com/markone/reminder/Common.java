@@ -1,11 +1,15 @@
 package com.markone.reminder;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.snackbar.Snackbar;
 import com.markone.reminder.ui.reminder.Reminder;
 
@@ -25,9 +29,14 @@ public class Common {
 
     public static final String REMINDER_DB = "Reminder DB";
     //Todo remove this with actual id
-    public static final String USER_ID = "Neeraj User ID";
     public static final String REMINDER_NAME = "ReminderName";
     private static final Calendar myCalendar = Calendar.getInstance();
+
+    public static final String USER_FILE = "User";
+    public static final String USER_NAME = "UserName";
+    public static final String USER_MAIL = "UserMail";
+    public static final String USER_ID = "UserId";
+    public static final String USER_URI = "UserUri";
 
     public static final Comparator<Reminder> reminderComparator = new Comparator<Reminder>() {
         @Override
@@ -185,4 +194,14 @@ public class Common {
         calendar.set(Calendar.YEAR, reminder.getStartDate_Year());
     }
 
+    public static GoogleSignInClient getGoogleSignInClient(Activity activity){
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        // Build a GoogleSignInClient with the options specified by gso.
+        return GoogleSignIn.getClient(activity, gso);
+    }
 }

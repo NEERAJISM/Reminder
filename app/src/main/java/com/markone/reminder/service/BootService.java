@@ -24,16 +24,16 @@ import com.markone.reminder.ui.reminder.Reminder;
 import java.util.Calendar;
 
 public class BootService extends Service {
-
-    private final CollectionReference reminderCollectionReference = FirebaseFirestore.getInstance()
-            .collection(Common.REMINDER_DB)
-            .document(Common.USER_ID)
-            .collection(Common.REMINDER_COLLECTION);
     private AlarmManager alarmManager;
+    private CollectionReference reminderCollectionReference;
 
     @Override
     public void onCreate() {
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        reminderCollectionReference = FirebaseFirestore.getInstance()
+                .collection(Common.REMINDER_DB)
+                .document(getSharedPreferences(Common.USER_FILE, Context.MODE_PRIVATE).getString(Common.USER_ID, "UserId"))
+                .collection(Common.REMINDER_COLLECTION);
     }
 
     @Override

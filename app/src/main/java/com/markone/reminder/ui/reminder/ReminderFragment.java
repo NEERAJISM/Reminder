@@ -47,10 +47,7 @@ public class ReminderFragment extends Fragment {
     private int hour, min, day, year, month;
     private AlarmManager alarmManager;
 
-    private final CollectionReference reminderCollectionReference = FirebaseFirestore.getInstance()
-            .collection(Common.REMINDER_DB)
-            .document(Common.USER_ID)
-            .collection(Common.REMINDER_COLLECTION);
+    private  CollectionReference reminderCollectionReference;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,6 +57,10 @@ public class ReminderFragment extends Fragment {
         for (Common.Frequency value : Common.Frequency.values()) {
             frequency.add(value.toString());
         }
+        reminderCollectionReference = FirebaseFirestore.getInstance()
+                .collection(Common.REMINDER_DB)
+                .document(getActivity().getSharedPreferences(Common.USER_FILE, Context.MODE_PRIVATE).getString(Common.USER_ID, "UserId"))
+                .collection(Common.REMINDER_COLLECTION);
     }
 
     @Nullable

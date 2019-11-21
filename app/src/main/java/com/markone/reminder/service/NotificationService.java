@@ -50,14 +50,16 @@ public class NotificationService extends Service {
 
     private Vibrator vibrator;
     private NotificationManager notificationManager;
-    private final CollectionReference reminderCollectionReference = FirebaseFirestore.getInstance()
-            .collection(Common.REMINDER_DB)
-            .document(Common.USER_ID)
-            .collection(Common.REMINDER_COLLECTION);
+    private CollectionReference reminderCollectionReference;
     private AlarmManager alarmManager;
 
     @Override
     public void onCreate() {
+        reminderCollectionReference = FirebaseFirestore.getInstance()
+                .collection(Common.REMINDER_DB)
+                .document(getSharedPreferences(Common.USER_FILE, Context.MODE_PRIVATE).getString(Common.USER_ID, "UserId"))
+                .collection(Common.REMINDER_COLLECTION);
+
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
