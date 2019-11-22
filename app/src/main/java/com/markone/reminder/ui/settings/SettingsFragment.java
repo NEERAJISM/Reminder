@@ -29,12 +29,11 @@ import static com.markone.reminder.Common.Frequency.Every_1_Min;
 import static com.markone.reminder.Common.Frequency.Every_30_Min;
 import static com.markone.reminder.Common.Frequency.Every_5_Min;
 import static com.markone.reminder.Common.Frequency.getFrequency;
+import static com.markone.reminder.Common.SETTING_FILE;
+import static com.markone.reminder.Common.SNOOZE_SETTING;
 import static com.markone.reminder.Common.getGoogleSignInClient;
 
 public class SettingsFragment extends Fragment {
-    public static final String SETTING_FILE = "Settings";
-    public static final String SNOOZE_SETTING = "snoozeSetting";
-
     private FragmentSettingsBinding fragmentSettingsBinding;
     private List<String> snoozeListName = new ArrayList<>();
     private Frequency snoozeFrequency = Every_1_Min;

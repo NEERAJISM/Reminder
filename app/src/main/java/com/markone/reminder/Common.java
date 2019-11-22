@@ -32,11 +32,19 @@ public class Common {
     public static final String REMINDER_NAME = "ReminderName";
     private static final Calendar myCalendar = Calendar.getInstance();
 
+    // Intent Actions
+    public static final String ACTION_NOT_STARTUP = "ActionNotStartup";
+
+    // Shared preferences
     public static final String USER_FILE = "User";
     public static final String USER_NAME = "UserName";
     public static final String USER_MAIL = "UserMail";
     public static final String USER_ID = "UserId";
     public static final String USER_URI = "UserUri";
+
+    public static final String SETTING_FILE = "Settings";
+    public static final String SNOOZE_SETTING = "snoozeSetting";
+    public static final String IS_FIRST_STARTUP = "isFirstStartup";
 
     public static final Comparator<Reminder> reminderComparator = new Comparator<Reminder>() {
         @Override
@@ -194,7 +202,7 @@ public class Common {
         calendar.set(Calendar.YEAR, reminder.getStartDate_Year());
     }
 
-    public static GoogleSignInClient getGoogleSignInClient(Activity activity){
+    public static GoogleSignInClient getGoogleSignInClient(Activity activity) {
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

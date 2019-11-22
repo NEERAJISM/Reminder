@@ -1,5 +1,6 @@
 package com.markone.reminder;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -76,7 +77,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 navController.navigate(R.id.nav_share);
                 break;
             case R.id.menu_tutorial:
-                navController.navigate(R.id.nav_tutorial);
+                Intent intent = new Intent(this, TutorialActivity.class);
+                intent.setAction(Common.ACTION_NOT_STARTUP);
+                startActivity(intent);
                 break;
         }
         return true;

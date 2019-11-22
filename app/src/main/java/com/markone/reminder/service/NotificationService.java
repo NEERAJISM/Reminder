@@ -28,7 +28,6 @@ import com.markone.reminder.R;
 import com.markone.reminder.ReminderActivity;
 import com.markone.reminder.alarm.AlarmReceiver;
 import com.markone.reminder.ui.reminder.Reminder;
-import com.markone.reminder.ui.settings.SettingsFragment;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -161,8 +160,8 @@ public class NotificationService extends Service {
     }
 
     private void updateReminder(String nId, final boolean isSnooze) {
-        final Common.Frequency snoozeFrequency = getFrequency(getSharedPreferences(SettingsFragment.SETTING_FILE, Context.MODE_PRIVATE)
-                .getString(SettingsFragment.SNOOZE_SETTING, Every_1_Min.toString()));
+        final Common.Frequency snoozeFrequency = getFrequency(getSharedPreferences(Common.SETTING_FILE, Context.MODE_PRIVATE)
+                .getString(Common.SNOOZE_SETTING, Every_1_Min.toString()));
 
         //Decide next snooze / reminder time whichever is less (chk if no next reminder time)
         reminderCollectionReference.document(nId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
