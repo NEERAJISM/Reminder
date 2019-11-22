@@ -280,6 +280,7 @@ public class ReminderFragment extends Fragment {
         Intent intent = new Intent(getContext(), AlarmReceiver.class);
         intent.setAction(reminder.getId());
         intent.putExtra(Common.REMINDER_NAME, reminder.getName());
+        intent.putExtra(Common.REMINDER_FREQUENCY, reminder.getFrequency().toString());
         return PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 

@@ -38,8 +38,9 @@ import static com.markone.reminder.Common.Frequency.Every_1_Min;
 import static com.markone.reminder.Common.Frequency.getFrequency;
 
 public class NotificationService extends Service {
-    public static final String ACTION_STOP_SERVICE = "StopService";
     public static final String ACTION_SNOOZE_SERVICE = "SnoozeService";
+    public static final String ACTION_STOP_SERVICE = "StopService";
+    public static final String ACTION_COMPLETE_SERVICE = "CompleteService";
     public static final String NOTIFICATION_ID = "NotificationId";
 
     private Notification foregroundNotification;
@@ -70,14 +71,15 @@ public class NotificationService extends Service {
         String reminderId = intent.getAction();
         int uniqueId = (int) System.currentTimeMillis();
 
-        if (ACTION_STOP_SERVICE.equals(reminderId) || ACTION_SNOOZE_SERVICE.equals(reminderId)) {
+        if (ACTION_STOP_SERVICE.equals(reminderId) || ACTION_SNOOZE_SERVICE.equals(reminderId) || ACTION_COMPLETE_SERVICE.equals(reminderId)) {
             String nId = intent.getStringExtra(NOTIFICATION_ID);
-            updateReminder(nId, ACTION_SNOOZE_SERVICE.equals(reminderId));
+            updateReminder(nId, reminderId);
             handleNotification(nId, uniqueId);
             return super.onStartCommand(intent, flags, startId);
         }
 
         String reminderName = intent.getStringExtra(Common.REMINDER_NAME);
+        boolean isRepeating = Common.Frequency.Once != Common.Frequency.getFrequency(intent.getStringExtra(Common.REMINDER_FREQUENCY));
 
         // Open Main Activity
         Intent open = new Intent(this, ReminderActivity.class);
@@ -85,20 +87,20 @@ public class NotificationService extends Service {
         open.putExtra(NOTIFICATION_ID, reminderId);
         PendingIntent pendingIntentActivity = PendingIntent.getActivity(this, uniqueId, open, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        // Done
-        Intent done = new Intent(this, NotificationService.class);
-        done.setAction(ACTION_STOP_SERVICE);
-        done.putExtra(NOTIFICATION_ID, reminderId);
-        PendingIntent pendingIntentDone = PendingIntent.getService(this, uniqueId, done, PendingIntent.FLAG_CANCEL_CURRENT);
-
         // Snooze
         Intent snooze = new Intent(this, NotificationService.class);
         snooze.setAction(ACTION_SNOOZE_SERVICE);
         snooze.putExtra(NOTIFICATION_ID, reminderId);
         PendingIntent pendingIntentSnooze = PendingIntent.getService(this, uniqueId, snooze, PendingIntent.FLAG_CANCEL_CURRENT);
 
+        // Done
+        Intent done = new Intent(this, NotificationService.class);
+        done.setAction(ACTION_STOP_SERVICE);
+        done.putExtra(NOTIFICATION_ID, reminderId);
+        PendingIntent pendingIntentDone = PendingIntent.getService(this, uniqueId, done, PendingIntent.FLAG_CANCEL_CURRENT);
+
         //Send Notification
-        Notification notification = new NotificationCompat.Builder(this, Common.REMINDER_CHANNEL)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, Common.REMINDER_CHANNEL)
                 .setSmallIcon(R.drawable.ic_reminder)
                 .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_app_icon))
                 .setContentTitle("Reminder")
@@ -108,10 +110,19 @@ public class NotificationService extends Service {
                 .setOngoing(true)
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 //Todo icon not visible
-                .addAction(R.drawable.ic_tick, "Mark Complete", pendingIntentDone)
                 .addAction(R.drawable.ic_snooze, "Snooze", pendingIntentSnooze)
-                .setContentIntent(pendingIntentActivity).build();
+                .addAction(R.drawable.ic_tick, isRepeating ? "Complete Once" : "Mark as Done", pendingIntentDone)
+                .setContentIntent(pendingIntentActivity);
 
+        // Complete
+        if (isRepeating) {
+            Intent complete = new Intent(this, NotificationService.class);
+            complete.setAction(ACTION_COMPLETE_SERVICE);
+            complete.putExtra(NOTIFICATION_ID, reminderId);
+            notificationBuilder.addAction(R.drawable.ic_tick, "Mark as Done", PendingIntent.getService(this, uniqueId, complete, PendingIntent.FLAG_CANCEL_CURRENT));
+        }
+
+        Notification notification = notificationBuilder.build();
         idNotificationMap.put(reminderId, notification);
         notificationIdMap.put(notification, reminderId);
 
@@ -159,7 +170,7 @@ public class NotificationService extends Service {
         }
     }
 
-    private void updateReminder(String nId, final boolean isSnooze) {
+    private void updateReminder(String nId, final String action) {
         final Common.Frequency snoozeFrequency = getFrequency(getSharedPreferences(Common.SETTING_FILE, Context.MODE_PRIVATE)
                 .getString(Common.SNOOZE_SETTING, Every_1_Min.toString()));
 
@@ -171,6 +182,13 @@ public class NotificationService extends Service {
                     Reminder reminder = task.getResult().toObject(Reminder.class);
 
                     if (reminder != null) {
+                        if (ACTION_COMPLETE_SERVICE.equals(action)) {
+                            reminder.setStatus(Common.Status.Done);
+                            reminderCollectionReference.document(reminder.getId()).set(reminder);
+                            return;
+                        }
+
+                        boolean isSnooze = ACTION_SNOOZE_SERVICE.equals(action);
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(Calendar.HOUR_OF_DAY, reminder.getStartDate_Hour());
                         calendar.set(Calendar.MINUTE, reminder.getStartDate_Minute());
@@ -203,7 +221,7 @@ public class NotificationService extends Service {
                         }
 
                         if (isSnooze && (Common.Frequency.Once == reminder.getFrequency() || snoozeCalendar.getTimeInMillis() < calendar.getTimeInMillis())) {
-                            setAlarm(snoozeCalendar, reminder.getId(), reminder.getName());
+                            setAlarm(snoozeCalendar, reminder.getId(), reminder.getName(), reminder.getFrequency());
 
                             reminder.setSnoozeDate_Hour(snoozeCalendar.get(Calendar.HOUR_OF_DAY));
                             reminder.setSnoozeDate_Minute(snoozeCalendar.get(Calendar.MINUTE));
@@ -212,14 +230,13 @@ public class NotificationService extends Service {
                             reminder.setSnoozeDate_Year(snoozeCalendar.get(Calendar.YEAR));
                         } else if (Common.Frequency.Once != reminder.getFrequency()) {
                             reminder.setSnoozeDate_Year(0);
-                            setAlarm(calendar, reminder.getId(), reminder.getName());
+                            setAlarm(calendar, reminder.getId(), reminder.getName(), reminder.getFrequency());
                         }
 
                         // Mark as Done
                         if (!isSnooze && Common.Frequency.Once == reminder.getFrequency()) {
                             reminder.setStatus(Common.Status.Done);
                         }
-
                         reminderCollectionReference.document(reminder.getId()).set(reminder);
                     }
                 }
@@ -227,10 +244,11 @@ public class NotificationService extends Service {
         });
     }
 
-    private void setAlarm(Calendar calendar, String reminderId, String reminderName) {
+    private void setAlarm(Calendar calendar, String reminderId, String reminderName, Common.Frequency frequency) {
         Intent intent = new Intent(this, AlarmReceiver.class);
         intent.setAction(reminderId);
         intent.putExtra(Common.REMINDER_NAME, reminderName);
+        intent.putExtra(Common.REMINDER_FREQUENCY, frequency.toString());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }

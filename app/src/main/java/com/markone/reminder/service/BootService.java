@@ -70,6 +70,7 @@ public class BootService extends Service {
                         Intent intent = new Intent(context, AlarmReceiver.class);
                         intent.setAction(reminder.getId());
                         intent.putExtra(Common.REMINDER_NAME, reminder.getName());
+                        intent.putExtra(Common.REMINDER_FREQUENCY, reminder.getFrequency().toString());
                         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
                         alarmManager.set(AlarmManager.RTC_WAKEUP, Math.max(System.currentTimeMillis(), calendar.getTimeInMillis()), pendingIntent);
                     }

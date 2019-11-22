@@ -30,6 +30,7 @@ public class Common {
     public static final String REMINDER_DB = "Reminder DB";
     //Todo remove this with actual id
     public static final String REMINDER_NAME = "ReminderName";
+    public static final String REMINDER_FREQUENCY = "ReminderFrequency";
     private static final Calendar myCalendar = Calendar.getInstance();
 
     // Intent Actions

@@ -19,6 +19,7 @@ import com.markone.reminder.databinding.ActivityReminderBinding;
 import com.markone.reminder.service.NotificationService;
 import com.markone.reminder.ui.reminder.Reminder;
 
+import static com.markone.reminder.service.NotificationService.ACTION_COMPLETE_SERVICE;
 import static com.markone.reminder.service.NotificationService.ACTION_SNOOZE_SERVICE;
 import static com.markone.reminder.service.NotificationService.ACTION_STOP_SERVICE;
 import static com.markone.reminder.service.NotificationService.NOTIFICATION_ID;
@@ -85,7 +86,7 @@ public class ReminderActivity extends AppCompatActivity {
         binding.btMarkComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Common.viewToast(getApplicationContext(), "Reminder Marked Completed");
+                Common.viewToast(getApplicationContext(), "Reminder Completed");
                 service.setAction(ACTION_STOP_SERVICE);
                 startService(service);
                 finish();
@@ -95,7 +96,9 @@ public class ReminderActivity extends AppCompatActivity {
         binding.btMarkCompleteForever.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Common.viewToast(getApplicationContext(), "Reminder Marked Completed");
+                Common.viewToast(getApplicationContext(), "Reminder Marked as Done");
+                service.setAction(ACTION_COMPLETE_SERVICE);
+                startService(service);
                 finish();
             }
         });
