@@ -9,6 +9,10 @@
             android:icon="@drawable/ic_reminder"
             android:title="Set Reminder" />
         <item
+            android:id="@+id/menu_completed"
+            android:icon="@drawable/ic_tick"
+            android:title="Show Completed" />
+        <item
             android:id="@+id/menu_tutorial"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/menu_tutorial" />

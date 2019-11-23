@@ -33,4 +33,8 @@ public class TabDashboard extends Fragment {
         }
         return binding.getRoot();
     }
+
+    public void ShowCompleted() {
+        binding.viewPager.setCurrentItem(1, true);
+    }
 }

@@ -17,6 +17,7 @@ import static com.markone.reminder.Common.USER_FILE;
 import static com.markone.reminder.Common.USER_ID;
 import static com.markone.reminder.Common.USER_MAIL;
 import static com.markone.reminder.Common.USER_NAME;
+import static com.markone.reminder.Common.USER_URI;
 import static com.markone.reminder.Common.getGoogleSignInClient;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -64,13 +65,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
-//            Uri personPhoto = account.getPhotoUrl();
-            //Todo save user photo
-
+            //Todo handle object req not null
             assert account != null;
             getSharedPreferences(USER_FILE, MODE_PRIVATE).edit()
                     .putString(USER_NAME, account.getGivenName())
                     .putString(USER_MAIL, account.getEmail())
+                    .putString(USER_URI, account.getPhotoUrl() != null ? account.getPhotoUrl().toString() : "")
                     .putString(USER_ID, account.getId()).apply();
 
             // Signed in successfully, show authenticated UI.

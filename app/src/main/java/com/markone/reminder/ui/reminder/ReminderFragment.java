@@ -74,11 +74,13 @@ public class ReminderFragment extends Fragment {
         }
 
         if (getArguments() != null) {
+            binding.btCreateReminder.setText("Update Reminder");
             binding.btDeleteReminder.setVisibility(View.VISIBLE);
             reminder = (Reminder) getArguments().getSerializable("Reminder");
             updateUI();
             setDeleteButton();
         } else {
+            binding.btCreateReminder.setText("Set Reminder");
             binding.btDeleteReminder.setVisibility(View.INVISIBLE);
             reminder = new Reminder();
             day = myCalendar.get(Calendar.DAY_OF_MONTH);
