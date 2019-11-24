@@ -8,7 +8,6 @@ import android.os.Build;
 import com.markone.reminder.Common;
 import com.markone.reminder.service.NotificationService;
 
-//Todo rename this
 public class AlarmReceiver extends BroadcastReceiver {
 
     @Override

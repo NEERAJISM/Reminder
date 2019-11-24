@@ -65,7 +65,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
-            //Todo handle object req not null
             assert account != null;
             getSharedPreferences(USER_FILE, MODE_PRIVATE).edit()
                     .putString(USER_NAME, account.getGivenName())

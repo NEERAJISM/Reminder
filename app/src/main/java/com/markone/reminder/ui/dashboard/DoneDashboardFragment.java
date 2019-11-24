@@ -24,12 +24,10 @@ public class DoneDashboardFragment extends Fragment {
 
     private FragmentDoneDashboardBinding fragmentDashboardBinding;
 
-    private RecyclerView doneRecyclerView;
     private RecyclerView.LayoutManager doneLayoutManager;
     private RecyclerViewAdapter doneAdapter;
     private List<Reminder> doneReminders = new ArrayList<>();
 
-    private RecyclerView earlierRecyclerView;
     private RecyclerView.LayoutManager earlierLayoutManager;
     private RecyclerViewAdapter earlierAdapter;
     private List<Reminder> earlierReminders = new ArrayList<>();
@@ -51,18 +49,18 @@ public class DoneDashboardFragment extends Fragment {
         if (fragmentDashboardBinding == null) {
             fragmentDashboardBinding = FragmentDoneDashboardBinding.inflate(inflater, container, false);
 
-            doneRecyclerView = fragmentDashboardBinding.rvReminders;
+            RecyclerView doneRecyclerView = fragmentDashboardBinding.rvReminders;
             doneRecyclerView.setLayoutManager(doneLayoutManager);
             doneRecyclerView.setAdapter(doneAdapter);
 
-            earlierRecyclerView = fragmentDashboardBinding.rvEarlierReminders;
+            RecyclerView earlierRecyclerView = fragmentDashboardBinding.rvEarlierReminders;
             earlierRecyclerView.setLayoutManager(earlierLayoutManager);
             earlierRecyclerView.setAdapter(earlierAdapter);
         }
         return fragmentDashboardBinding.getRoot();
     }
 
-    public void updateReminders(List<Reminder> remindersDone) {
+    void updateReminders(List<Reminder> remindersDone) {
         doneReminders.clear();
         earlierReminders.clear();
 

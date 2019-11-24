@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -44,12 +45,10 @@ public class DashboardFragment extends Fragment {
     private FragmentDashboardBinding fragmentDashboardBinding;
     private NavController navController;
 
-    private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerViewAdapter mAdapter;
     private List<Reminder> reminders = new ArrayList<>();
 
-    private RecyclerView upcomingRecyclerView;
     private RecyclerView.LayoutManager upcomingLayoutManager;
     private RecyclerViewAdapter upcomingAdapter;
     private List<Reminder> upcomingReminders = new ArrayList<>();
@@ -81,7 +80,7 @@ public class DashboardFragment extends Fragment {
 
         reminderCollectionReference = FirebaseFirestore.getInstance()
                 .collection(Common.REMINDER_DB)
-                .document(getActivity().getSharedPreferences(Common.USER_FILE, MODE_PRIVATE).getString(Common.USER_ID, "UserId"))
+                .document(Objects.requireNonNull(getActivity()).getSharedPreferences(Common.USER_FILE, MODE_PRIVATE).getString(Common.USER_ID, "UserId"))
                 .collection(Common.REMINDER_COLLECTION);
 
         sharedPreferences = getActivity().getSharedPreferences(Common.SETTING_FILE, MODE_PRIVATE);
@@ -99,11 +98,11 @@ public class DashboardFragment extends Fragment {
             fragmentDashboardBinding = FragmentDashboardBinding.inflate(inflater, container, false);
             floatingActionButton = fragmentDashboardBinding.fab;
 
-            recyclerView = fragmentDashboardBinding.rvReminders;
+            RecyclerView recyclerView = fragmentDashboardBinding.rvReminders;
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(mAdapter);
 
-            upcomingRecyclerView = fragmentDashboardBinding.rvUpcomingReminders;
+            RecyclerView upcomingRecyclerView = fragmentDashboardBinding.rvUpcomingReminders;
             upcomingRecyclerView.setLayoutManager(upcomingLayoutManager);
             upcomingRecyclerView.setAdapter(upcomingAdapter);
             setSwipeFreshLayout();
@@ -136,7 +135,7 @@ public class DashboardFragment extends Fragment {
         });
     }
 
-    public void getReminders() {
+    void getReminders() {
         fragmentDashboardBinding.swipeFreshLayout.setRefreshing(true);
         reminderCollectionReference.get(isFirstLogin ? Source.DEFAULT : Source.CACHE).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override

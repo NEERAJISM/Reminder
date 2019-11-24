@@ -30,7 +30,6 @@ public class Common {
     public static final int MAX_REMINDERS_PRO = 100;
 
     public static final String REMINDER_DB = "Reminder DB";
-    //Todo remove this with actual id
     public static final String REMINDER_NAME = "ReminderName";
     public static final String REMINDER_FREQUENCY = "ReminderFrequency";
     private static final Calendar myCalendar = Calendar.getInstance();
@@ -104,7 +103,7 @@ public class Common {
         hour = (hour > 12 ? hour - 12 : hour);
         String hourString = (hour == 0) ? "12" : ((hour < 10 ? "0" : "") + hour);
         String minString = (min < 10 ? "0" : "") + min;
-        return new StringBuilder(hourString).append(" : ").append(minString).append(" ").append(ampmString).toString();
+        return hourString + " : " + minString + " " + ampmString;
     }
 
     public static String getFormattedDate(int day, int month, int year) {

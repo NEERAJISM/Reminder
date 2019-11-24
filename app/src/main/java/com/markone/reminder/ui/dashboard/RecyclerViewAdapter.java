@@ -32,7 +32,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    public void updateReminders(List<Reminder> reminders) {
+    void updateReminders(List<Reminder> reminders) {
         if (reminders != null) {
             reminderList.clear();
             this.reminderList.addAll(reminders);
@@ -61,7 +61,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView tvTime;
         TextView tvFrequency;
         TextView tvName;
-        TextView tvDetail;
         ImageView ivFrequency;
         MaterialCardView cardView;
 
@@ -76,7 +75,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             tvTime = itemView.findViewById(R.id.tv_time);
             tvFrequency = itemView.findViewById(R.id.tv_frequency);
             tvName = itemView.findViewById(R.id.tv_name);
-            //TODO add detail tv here
         }
 
         void onBind(int position) {

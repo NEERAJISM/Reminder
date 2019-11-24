@@ -21,8 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -233,15 +231,7 @@ public class ReminderFragment extends Fragment {
             reminder.setFrequency(Common.Frequency.getFrequency(binding.spinner.getSelectedItem().toString()));
             reminder.setStatus(getPriority());
 
-            documentReference.set(reminder).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                    } else {
-                        //Todo failure
-                    }
-                }
-            });
+            documentReference.set(reminder);
             setAlarm(calendar);
             getActivity().onBackPressed();
         }

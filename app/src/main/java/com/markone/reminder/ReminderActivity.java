@@ -111,9 +111,11 @@ public class ReminderActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
                     Reminder reminder = task.getResult().toObject(Reminder.class);
-                    binding.tvDetails.setText(reminder.getDetails());
-                    if (reminder.getFrequency() != Common.Frequency.Once) {
-                        binding.btMarkCompleteForever.setVisibility(View.VISIBLE);
+                    if (reminder != null) {
+                        binding.tvDetails.setText(reminder.getDetails());
+                        if (reminder.getFrequency() != Common.Frequency.Once) {
+                            binding.btMarkCompleteForever.setVisibility(View.VISIBLE);
+                        }
                     } else {
                         binding.btMarkCompleteForever.setVisibility(View.GONE);
                     }
