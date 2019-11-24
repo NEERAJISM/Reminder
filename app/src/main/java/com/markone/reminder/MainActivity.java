@@ -3,6 +3,7 @@ package com.markone.reminder;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         menuItem.setChecked(true);
         drawer.closeDrawers();
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         int id = menuItem.getItemId();
         switch (id) {
@@ -105,8 +108,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.menu_settings:
                 navController.navigate(R.id.nav_settings);
                 break;
-            case R.id.menu_share:
-                navController.navigate(R.id.nav_share);
+            case R.id.menu_rate_us:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
                 break;
             case R.id.menu_tutorial:
                 Intent intent = new Intent(this, TutorialActivity.class);

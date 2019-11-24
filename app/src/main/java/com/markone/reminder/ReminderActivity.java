@@ -105,19 +105,28 @@ public class ReminderActivity extends AppCompatActivity {
 
     }
 
-    private void getReminder(String reminderId) {
+    private void getReminder(final String reminderId) {
         reminderCollectionReference.document(reminderId).get(Source.CACHE).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
                     Reminder reminder = task.getResult().toObject(Reminder.class);
                     if (reminder != null) {
-                        binding.tvDetails.setText(reminder.getDetails());
+                        String details = reminder.getDetails();
+                        if (Common.isBlank(details)) {
+                            binding.tvDetails.setVisibility(View.GONE);
+                        } else {
+                            binding.tvDetails.setText(reminder.getDetails());
+                            binding.tvDetails.setVisibility(View.VISIBLE);
+                        }
+
                         if (reminder.getFrequency() != Common.Frequency.Once) {
                             binding.btMarkCompleteForever.setVisibility(View.VISIBLE);
+                            binding.btMarkComplete.setText("Complete Once");
+                        } else {
+                            binding.btMarkComplete.setText("Mark as Done");
+                            binding.btMarkCompleteForever.setVisibility(View.GONE);
                         }
-                    } else {
-                        binding.btMarkCompleteForever.setVisibility(View.GONE);
                     }
                 }
             }

@@ -6,4 +6,5 @@
     <color name="colorAccent">#ec407a</color>
 
     <color name="dashboardBackground">#EEEEEE</color>
+    <color name="succes">#8bc34a</color>
 </resources>

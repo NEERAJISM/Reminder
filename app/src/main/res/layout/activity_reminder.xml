@@ -36,10 +36,17 @@
             android:id="@+id/tv_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="15dp"
+            android:layout_marginRight="30dp"
+            android:background="@color/dashboardBackground"
             android:paddingLeft="40dp"
+            android:paddingTop="10dp"
             android:paddingRight="40dp"
-            android:textSize="25dp"
+            android:paddingBottom="10dp"
+            android:textSize="20dp"
+            android:textStyle="italic"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title" />
@@ -49,8 +56,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="40dp"
             android:layout_marginRight="30dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@color/dashboardBackground"
             android:text="Snooze"
             android:textAllCaps="false"
             app:layout_constraintEnd_toEndOf="parent"
@@ -62,10 +71,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="30dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@color/colorPrimaryDark"
             android:text="Complete Once"
             android:textAllCaps="false"
+            android:textColor="@color/dashboardBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bt_snooze" />
@@ -75,16 +87,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="30dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@color/succes"
             android:text="Mark as Done"
             android:textAllCaps="false"
+            android:textColor="@color/dashboardBackground"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bt_mark_complete" />
-
-
+            app:layout_constraintTop_toBottomOf="@+id/bt_mark_complete" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </ScrollView>
