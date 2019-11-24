@@ -26,6 +26,8 @@ public class Common {
     public static final String REMINDER_COLLECTION = "Reminders";
     public static final String REMINDER_CHANNEL = "ReminderChannel";
     public static final long[] VIBRATION_PATTERN = {0L, 2000L, 500L};
+    public static final int MAX_REMINDERS = 15;
+    public static final int MAX_REMINDERS_PRO = 100;
 
     public static final String REMINDER_DB = "Reminder DB";
     //Todo remove this with actual id
@@ -46,6 +48,8 @@ public class Common {
     public static final String SETTING_FILE = "Settings";
     public static final String SNOOZE_SETTING = "snoozeSetting";
     public static final String IS_FIRST_STARTUP = "isFirstStartup";
+    public static final String IS_FIRST_LOGIN = "isFirstLogin";
+    public static final String CURRENT_REMINDER_SIZE = "currentReminderSize";
 
     public static final Comparator<Reminder> reminderComparator = new Comparator<Reminder>() {
         @Override

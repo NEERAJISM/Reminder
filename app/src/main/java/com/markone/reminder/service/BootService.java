@@ -17,6 +17,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.markone.reminder.Common;
 import com.markone.reminder.alarm.AlarmReceiver;
 import com.markone.reminder.ui.reminder.Reminder;
@@ -40,7 +41,7 @@ public class BootService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         final Context context = this;
 
-        reminderCollectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        reminderCollectionReference.get(Source.CACHE).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {

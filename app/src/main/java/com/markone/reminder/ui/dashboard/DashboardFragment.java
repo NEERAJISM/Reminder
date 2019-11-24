@@ -1,6 +1,6 @@
 package com.markone.reminder.ui.dashboard;
 
-import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +22,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.markone.reminder.Common;
 import com.markone.reminder.R;
 import com.markone.reminder.databinding.FragmentDashboardBinding;
@@ -31,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Neeraj on 02-Nov-19
@@ -57,8 +60,9 @@ public class DashboardFragment extends Fragment {
 
     private DoneDashboardFragment doneDashboardFragment;
 
-    DashboardFragment() {
-    }
+    private boolean isFirstLogin = true;
+    private boolean isProUser = false;
+    private SharedPreferences sharedPreferences;
 
     DashboardFragment(DoneDashboardFragment doneDashboardFragment) {
         this.doneDashboardFragment = doneDashboardFragment;
@@ -77,8 +81,15 @@ public class DashboardFragment extends Fragment {
 
         reminderCollectionReference = FirebaseFirestore.getInstance()
                 .collection(Common.REMINDER_DB)
-                .document(getActivity().getSharedPreferences(Common.USER_FILE, Context.MODE_PRIVATE).getString(Common.USER_ID, "UserId"))
+                .document(getActivity().getSharedPreferences(Common.USER_FILE, MODE_PRIVATE).getString(Common.USER_ID, "UserId"))
                 .collection(Common.REMINDER_COLLECTION);
+
+        sharedPreferences = getActivity().getSharedPreferences(Common.SETTING_FILE, MODE_PRIVATE);
+        isFirstLogin = sharedPreferences.getBoolean(Common.IS_FIRST_LOGIN, true);
+
+        if (isFirstLogin) {
+            sharedPreferences.edit().putBoolean(Common.SETTING_FILE, false).apply();
+        }
     }
 
     @Nullable
@@ -87,7 +98,6 @@ public class DashboardFragment extends Fragment {
         if (fragmentDashboardBinding == null) {
             fragmentDashboardBinding = FragmentDashboardBinding.inflate(inflater, container, false);
             floatingActionButton = fragmentDashboardBinding.fab;
-            setFloatingButtonAction();
 
             recyclerView = fragmentDashboardBinding.rvReminders;
             recyclerView.setLayoutManager(layoutManager);
@@ -99,6 +109,7 @@ public class DashboardFragment extends Fragment {
             setSwipeFreshLayout();
         }
         getReminders();
+        setFloatingButtonAction();
         return fragmentDashboardBinding.getRoot();
     }
 
@@ -115,14 +126,19 @@ public class DashboardFragment extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navController.navigate(R.id.nav_reminder);
+                int currentReminderSize = sharedPreferences.getInt(Common.CURRENT_REMINDER_SIZE, 0);
+                if ((isProUser ? Common.MAX_REMINDERS_PRO : Common.MAX_REMINDERS) <= currentReminderSize) {
+                    Common.viewToast(getContext(), "Max Reminder Limit Reached");
+                } else {
+                    navController.navigate(R.id.nav_reminder);
+                }
             }
         });
     }
 
     public void getReminders() {
         fragmentDashboardBinding.swipeFreshLayout.setRefreshing(true);
-        reminderCollectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        reminderCollectionReference.get(isFirstLogin ? Source.DEFAULT : Source.CACHE).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull final Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
@@ -138,6 +154,7 @@ public class DashboardFragment extends Fragment {
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
 
                     long today = calendar.getTimeInMillis();
+                    sharedPreferences.edit().putInt(Common.CURRENT_REMINDER_SIZE, task.getResult().size()).apply();
 
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                         Reminder reminder = documentSnapshot.toObject(Reminder.class);

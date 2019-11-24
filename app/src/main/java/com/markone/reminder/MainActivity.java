@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private NavigationView navigationView;
 
+    private boolean isProUser = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +89,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = menuItem.getItemId();
         switch (id) {
             case R.id.menu_new_reminder:
-                navController.navigate(R.id.nav_reminder);
+                int currentReminderSize = getSharedPreferences(Common.SETTING_FILE, MODE_PRIVATE).getInt(Common.CURRENT_REMINDER_SIZE, 0);
+                if ((isProUser ? Common.MAX_REMINDERS_PRO : Common.MAX_REMINDERS) <= currentReminderSize) {
+                    Common.viewToast(this, "Max Reminder Limit Reached");
+                } else {
+                    navController.navigate(R.id.nav_reminder);
+                }
                 break;
             case R.id.menu_completed:
                 Fragment fragment = getSupportFragmentManager().getFragments().get(0).getChildFragmentManager().getFragments().get(0);

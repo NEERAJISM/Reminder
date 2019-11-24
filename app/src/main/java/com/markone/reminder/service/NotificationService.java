@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Source;
 import com.markone.reminder.Common;
 import com.markone.reminder.R;
 import com.markone.reminder.ReminderActivity;
@@ -175,7 +176,7 @@ public class NotificationService extends Service {
                 .getString(Common.SNOOZE_SETTING, Every_1_Min.toString()));
 
         //Decide next snooze / reminder time whichever is less (chk if no next reminder time)
-        reminderCollectionReference.document(nId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        reminderCollectionReference.document(nId).get(Source.CACHE).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
