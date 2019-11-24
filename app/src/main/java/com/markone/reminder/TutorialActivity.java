@@ -7,8 +7,19 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
 
 import com.markone.reminder.databinding.ActivityTutorialBinding;
+import com.markone.reminder.ui.tutorial.TutorialDashboard;
+import com.markone.reminder.ui.tutorial.TutorialMain;
+import com.markone.reminder.ui.tutorial.TutorialPopup;
+import com.markone.reminder.ui.tutorial.TutorialReminder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TutorialActivity extends AppCompatActivity {
 
@@ -26,6 +37,11 @@ public class TutorialActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         ActivityTutorialBinding binding = ActivityTutorialBinding.inflate(getLayoutInflater());
+
+        PagerAdapter adapter = new CustomPagerAdapter(getSupportFragmentManager());
+        binding.viewPager.setAdapter(adapter);
+        binding.tabDots.setupWithViewPager(binding.viewPager);
+
         binding.btSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,5 +58,28 @@ public class TutorialActivity extends AppCompatActivity {
     private void skipToLogon() {
         startActivity(new Intent(this, LoginActivity.class));
         finish();
+    }
+
+    private class CustomPagerAdapter extends FragmentStatePagerAdapter {
+        List<Fragment> list = new ArrayList<>();
+
+        CustomPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+            list.clear();
+            list.add(new TutorialMain());
+            list.add(new TutorialDashboard());
+            list.add(new TutorialReminder());
+            list.add(new TutorialPopup());
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return list.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
     }
 }

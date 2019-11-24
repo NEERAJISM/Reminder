@@ -90,7 +90,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="30dp"
             android:background="@drawable/round_button"
-            android:backgroundTint="@color/succes"
+            android:backgroundTint="@color/success"
             android:text="Mark as Done"
             android:textAllCaps="false"
             android:textColor="@color/dashboardBackground"

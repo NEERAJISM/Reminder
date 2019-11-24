@@ -6,5 +6,7 @@
     <color name="colorAccent">#ec407a</color>
 
     <color name="dashboardBackground">#EEEEEE</color>
-    <color name="succes">#8bc34a</color>
+    <color name="success">#8bc34a</color>
+    <color name="delete">#e53935</color>
+
 </resources>
