@@ -2,7 +2,8 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/dashboardBackground">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_fresh_layout"
@@ -32,9 +33,9 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_reminders"
-                    android:nestedScrollingEnabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
                     app:layout_constraintTop_toBottomOf="@id/tv_today" />
 
                 <TextView
@@ -52,23 +53,23 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_upcoming_reminders"
                     android:layout_width="match_parent"
-                    android:nestedScrollingEnabled="false"
                     android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
                     app:layout_constraintTop_toBottomOf="@id/tv_upcoming" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
-
-        <TextView
-            android:id="@+id/tv_no_reminders"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="No Reminders set!!"
-            android:textSize="20dp"
-            android:textStyle="italic"
-            android:visibility="invisible" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+
+    <TextView
+        android:id="@+id/tv_no_reminders"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No Reminders set!!"
+        android:textSize="20dp"
+        android:textStyle="italic"
+        android:visibility="invisible" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

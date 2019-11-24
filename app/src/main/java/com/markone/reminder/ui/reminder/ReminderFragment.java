@@ -34,7 +34,6 @@ import com.markone.reminder.databinding.FragmentReminderBinding;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by Neeraj on 02-Nov-19
@@ -52,7 +51,7 @@ public class ReminderFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        alarmManager = (AlarmManager) Objects.requireNonNull(getContext()).getSystemService(Context.ALARM_SERVICE);
+        alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
         frequency = new ArrayList<String>();
         for (Common.Frequency value : Common.Frequency.values()) {
             frequency.add(value.toString());
@@ -244,7 +243,7 @@ public class ReminderFragment extends Fragment {
                 }
             });
             setAlarm(calendar);
-            (Objects.requireNonNull(getActivity())).onBackPressed();
+            getActivity().onBackPressed();
         }
     }
 
@@ -274,7 +273,7 @@ public class ReminderFragment extends Fragment {
         reminderCollectionReference.document(reminder.getId()).delete();
 
         Common.viewToast(getContext(), "Reminder Deleted successfully!!");
-        (Objects.requireNonNull(getActivity())).onBackPressed();
+        getActivity().onBackPressed();
     }
 
     private PendingIntent getPendingIntent() {

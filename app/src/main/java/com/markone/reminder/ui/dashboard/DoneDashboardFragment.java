@@ -98,7 +98,7 @@ public class DoneDashboardFragment extends Fragment {
         earlierAdapter.updateReminders(earlierReminders);
         earlierAdapter.notifyDataSetChanged();
 
-        fragmentDashboardBinding.tvNoReminders.setVisibility((doneReminders.size() == 0 && earlierReminders.size() == 0) ? View.VISIBLE : View.INVISIBLE);
+        fragmentDashboardBinding.tvNoReminders.setVisibility((doneReminders.size() == 0 && earlierReminders.size() == 0) ? View.VISIBLE : View.GONE);
         fragmentDashboardBinding.tvToday.setVisibility((doneReminders.size() != 0) ? View.VISIBLE : View.GONE);
         fragmentDashboardBinding.tvEarlier.setVisibility((earlierReminders.size() != 0) ? View.VISIBLE : View.GONE);
     }

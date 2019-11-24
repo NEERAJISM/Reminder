@@ -171,7 +171,7 @@ public class DashboardFragment extends Fragment {
                     Common.viewToast(getContext(), "Error while getting reminders");
                 }
 
-                fragmentDashboardBinding.tvNoReminders.setVisibility((reminders.size() == 0 && upcomingReminders.size() == 0) ? View.VISIBLE : View.INVISIBLE);
+                fragmentDashboardBinding.tvNoReminders.setVisibility((reminders.size() == 0 && upcomingReminders.size() == 0) ? View.VISIBLE : View.GONE);
                 fragmentDashboardBinding.tvToday.setVisibility((reminders.size() != 0) ? View.VISIBLE : View.GONE);
                 fragmentDashboardBinding.tvUpcoming.setVisibility((upcomingReminders.size() != 0) ? View.VISIBLE : View.GONE);
                 fragmentDashboardBinding.swipeFreshLayout.setRefreshing(false);

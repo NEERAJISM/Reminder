@@ -21,7 +21,6 @@ import com.markone.reminder.databinding.FragmentSettingsBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static com.markone.reminder.Common.Frequency;
 import static com.markone.reminder.Common.Frequency.Every_10_Min;
@@ -69,7 +68,7 @@ public class SettingsFragment extends Fragment {
                         if (task.isSuccessful()) {
                             Common.viewToast(getContext(), "Logged out successfully!!");
                             startActivity(new Intent(getContext(), LoginActivity.class));
-                            Objects.requireNonNull(getActivity()).finish();
+                            getActivity().finish();
                         } else {
                             Common.viewToast(getContext(), "Unable to logout!!");
                         }
