@@ -109,7 +109,7 @@ public class NotificationService extends Service {
                 .setWhen(System.currentTimeMillis())
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOngoing(true)
-                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
+                .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
                 //Todo icon not visible
                 .addAction(R.drawable.ic_snooze, "Snooze", pendingIntentSnooze)
                 .addAction(R.drawable.ic_tick, isRepeating ? "Complete Once" : "Mark as Done", pendingIntentDone)
