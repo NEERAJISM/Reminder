@@ -74,7 +74,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="30dp"
             android:background="@drawable/round_button"
-            android:backgroundTint="@color/colorPrimaryDark"
+            android:backgroundTint="@color/colorPrimary"
             android:text="Complete Once"
             android:textAllCaps="false"
             android:textColor="@color/dashboardBackground"

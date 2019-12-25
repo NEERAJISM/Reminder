@@ -116,12 +116,12 @@ public class NotificationService extends Service {
                 .setContentIntent(pendingIntentActivity);
 
         // Complete
-        if (isRepeating) {
-            Intent complete = new Intent(this, NotificationService.class);
-            complete.setAction(ACTION_COMPLETE_SERVICE);
-            complete.putExtra(NOTIFICATION_ID, reminderId);
-            notificationBuilder.addAction(R.drawable.ic_tick, "Mark as Done", PendingIntent.getService(this, uniqueId, complete, PendingIntent.FLAG_CANCEL_CURRENT));
-        }
+//        if (isRepeating) {
+//            Intent complete = new Intent(this, NotificationService.class);
+//            complete.setAction(ACTION_COMPLETE_SERVICE);
+//            complete.putExtra(NOTIFICATION_ID, reminderId);
+//            notificationBuilder.addAction(R.drawable.ic_tick, "Mark as Done", PendingIntent.getService(this, uniqueId, complete, PendingIntent.FLAG_CANCEL_CURRENT));
+//        }
 
         Notification notification = notificationBuilder.build();
         idNotificationMap.put(reminderId, notification);
