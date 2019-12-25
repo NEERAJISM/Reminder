@@ -109,10 +109,10 @@ public class NotificationService extends Service {
                 .setWhen(System.currentTimeMillis())
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOngoing(true)
+                //Todo make it configurable
                 .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-                //Todo icon not visible
-                .addAction(R.drawable.ic_snooze, "Snooze", pendingIntentSnooze)
-                .addAction(R.drawable.ic_tick, isRepeating ? "Complete Once" : "Mark as Done", pendingIntentDone)
+                .addAction(0, "Snooze", pendingIntentSnooze)
+                .addAction(0, isRepeating ? "Complete Once" : "Mark as Done", pendingIntentDone)
                 .setContentIntent(pendingIntentActivity);
 
         // Complete
@@ -120,7 +120,7 @@ public class NotificationService extends Service {
 //            Intent complete = new Intent(this, NotificationService.class);
 //            complete.setAction(ACTION_COMPLETE_SERVICE);
 //            complete.putExtra(NOTIFICATION_ID, reminderId);
-//            notificationBuilder.addAction(R.drawable.ic_tick, "Mark as Done", PendingIntent.getService(this, uniqueId, complete, PendingIntent.FLAG_CANCEL_CURRENT));
+//            notificationBuilder.addAction(0, "Mark as Done", PendingIntent.getService(this, uniqueId, complete, PendingIntent.FLAG_CANCEL_CURRENT));
 //        }
 
         Notification notification = notificationBuilder.build();
@@ -266,7 +266,6 @@ public class NotificationService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(Common.REMINDER_CHANNEL, Common.REMINDER_CHANNEL, NotificationManager.IMPORTANCE_HIGH);
             channel.setDescription("Channel to generate reminders for reminder app");
-            //Todo make it configurable
             channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PRIVATE);
             channel.enableVibration(true);
             // Register the channel with the system; you can't change the importance
