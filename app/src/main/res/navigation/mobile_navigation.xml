@@ -20,7 +20,7 @@
     <fragment
         android:id="@+id/nav_reminder"
         android:name="com.markone.reminder.ui.reminder.ReminderFragment"
-        android:label="@string/create_reminder"
+        android:label="@string/set_reminder"
         tools:layout="@layout/fragment_reminder" />
 
 </navigation>
