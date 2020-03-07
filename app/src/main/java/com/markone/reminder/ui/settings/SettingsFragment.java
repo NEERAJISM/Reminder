@@ -2,6 +2,7 @@ package com.markone.reminder.ui.settings;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.markone.reminder.databinding.FragmentSettingsBinding;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.markone.reminder.Common.Frequency;
 import static com.markone.reminder.Common.Frequency.Every_10_Min;
 import static com.markone.reminder.Common.Frequency.Every_1_Min;
@@ -33,6 +35,8 @@ import static com.markone.reminder.Common.SNOOZE_SETTING;
 import static com.markone.reminder.Common.getGoogleSignInClient;
 
 public class SettingsFragment extends Fragment {
+    private SharedPreferences sharedPreferences;
+
     private FragmentSettingsBinding fragmentSettingsBinding;
     private List<String> snoozeListName = new ArrayList<>();
     private Frequency snoozeFrequency = Every_1_Min;
@@ -45,7 +49,8 @@ public class SettingsFragment extends Fragment {
         snoozeListName.add(Every_10_Min.toString());
         snoozeListName.add(Every_30_Min.toString());
 
-        snoozeFrequency = getFrequency(getActivity().getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE).getString(SNOOZE_SETTING, Every_1_Min.toString()));
+        sharedPreferences = getActivity().getSharedPreferences(Common.SETTING_FILE, MODE_PRIVATE);
+        snoozeFrequency = getFrequency(sharedPreferences.getString(SNOOZE_SETTING, Every_1_Min.toString()));
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,6 +71,8 @@ public class SettingsFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+                            //ToDo Remove all reminders
+                            sharedPreferences.edit().putBoolean(Common.IS_FIRST_LOGIN, false).apply();
                             Common.viewToast(getContext(), "Logged out successfully!!");
                             startActivity(new Intent(getContext(), LoginActivity.class));
                             getActivity().finish();

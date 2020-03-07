@@ -22,13 +22,6 @@ public class Reminder implements Serializable {
     private int startDate_Hour;
     private int startDate_Minute;
 
-    // snooze
-    private int snoozeDate_Year;
-    private int snoozeDate_Month;
-    private int snoozeDate_Day;
-    private int snoozeDate_Hour;
-    private int snoozeDate_Minute;
-
     public String getName() {
         return name;
     }
@@ -107,46 +100,5 @@ public class Reminder implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-
-    public int getSnoozeDate_Year() {
-        return snoozeDate_Year;
-    }
-
-    public void setSnoozeDate_Year(int snoozeDate_Year) {
-        this.snoozeDate_Year = snoozeDate_Year;
-    }
-
-    public int getSnoozeDate_Month() {
-        return snoozeDate_Month;
-    }
-
-    public void setSnoozeDate_Month(int snoozeDate_Month) {
-        this.snoozeDate_Month = snoozeDate_Month;
-    }
-
-    public int getSnoozeDate_Day() {
-        return snoozeDate_Day;
-    }
-
-    public void setSnoozeDate_Day(int snoozeDate_Day) {
-        this.snoozeDate_Day = snoozeDate_Day;
-    }
-
-    public int getSnoozeDate_Hour() {
-        return snoozeDate_Hour;
-    }
-
-    public void setSnoozeDate_Hour(int snoozeDate_Hour) {
-        this.snoozeDate_Hour = snoozeDate_Hour;
-    }
-
-    public int getSnoozeDate_Minute() {
-        return snoozeDate_Minute;
-    }
-
-    public void setSnoozeDate_Minute(int snoozeDate_Minute) {
-        this.snoozeDate_Minute = snoozeDate_Minute;
     }
 }

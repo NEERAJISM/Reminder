@@ -189,7 +189,7 @@ public class NotificationService extends Service {
                             return;
                         }
 
-                        boolean isSnooze = ACTION_SNOOZE_SERVICE.equals(action);
+                        boolean isRepeating = (Common.Frequency.Once != reminder.getFrequency());
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(Calendar.HOUR_OF_DAY, reminder.getStartDate_Hour());
                         calendar.set(Calendar.MINUTE, reminder.getStartDate_Minute());
@@ -200,8 +200,10 @@ public class NotificationService extends Service {
                         calendar.set(Calendar.YEAR, reminder.getStartDate_Year());
 
                         // Set Next start date
-                        if (reminder.getSnoozeDate_Year() == 0 && Common.Frequency.Once != reminder.getFrequency()) {
-                            Common.updateCalendar(calendar, reminder.getFrequency());
+                        if (isRepeating && calendar.getTimeInMillis() <= System.currentTimeMillis()) {
+                            while (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
+                                Common.updateCalendar(calendar, reminder.getFrequency());
+                            }
                             reminder.setStartDate_Hour(calendar.get(Calendar.HOUR_OF_DAY));
                             reminder.setStartDate_Minute(calendar.get(Calendar.MINUTE));
                             reminder.setStartDate_Day(calendar.get(Calendar.DAY_OF_MONTH));
@@ -209,33 +211,22 @@ public class NotificationService extends Service {
                             reminder.setStartDate_Year(calendar.get(Calendar.YEAR));
                         }
 
-                        Calendar snoozeCalendar = (Calendar) calendar.clone();
+                        boolean isSnooze = ACTION_SNOOZE_SERVICE.equals(action);
+                        Calendar snoozeCalendar = Calendar.getInstance();
                         if (isSnooze) {
-                            if (reminder.getSnoozeDate_Year() != 0) {
-                                snoozeCalendar.set(Calendar.HOUR_OF_DAY, reminder.getSnoozeDate_Hour());
-                                snoozeCalendar.set(Calendar.MINUTE, reminder.getSnoozeDate_Minute());
-                                snoozeCalendar.set(Calendar.DAY_OF_MONTH, reminder.getSnoozeDate_Day());
-                                snoozeCalendar.set(Calendar.MONTH, reminder.getSnoozeDate_Month());
-                                snoozeCalendar.set(Calendar.YEAR, reminder.getSnoozeDate_Year());
-                            }
                             Common.updateCalendar(snoozeCalendar, snoozeFrequency);
+                            snoozeCalendar.set(Calendar.SECOND, 0);
+                            snoozeCalendar.set(Calendar.MILLISECOND, 0);
                         }
 
-                        if (isSnooze && (Common.Frequency.Once == reminder.getFrequency() || snoozeCalendar.getTimeInMillis() < calendar.getTimeInMillis())) {
+                        if (isSnooze && (!isRepeating || snoozeCalendar.getTimeInMillis() < calendar.getTimeInMillis())) {
                             setAlarm(snoozeCalendar, reminder.getId(), reminder.getName(), reminder.getFrequency());
-
-                            reminder.setSnoozeDate_Hour(snoozeCalendar.get(Calendar.HOUR_OF_DAY));
-                            reminder.setSnoozeDate_Minute(snoozeCalendar.get(Calendar.MINUTE));
-                            reminder.setSnoozeDate_Day(snoozeCalendar.get(Calendar.DAY_OF_MONTH));
-                            reminder.setSnoozeDate_Month(snoozeCalendar.get(Calendar.MONTH));
-                            reminder.setSnoozeDate_Year(snoozeCalendar.get(Calendar.YEAR));
-                        } else if (Common.Frequency.Once != reminder.getFrequency()) {
-                            reminder.setSnoozeDate_Year(0);
+                        } else if (isRepeating) {
                             setAlarm(calendar, reminder.getId(), reminder.getName(), reminder.getFrequency());
                         }
 
                         // Mark as Done
-                        if (!isSnooze && Common.Frequency.Once == reminder.getFrequency()) {
+                        if (!isSnooze && !isRepeating) {
                             reminder.setStatus(Common.Status.Done);
                         }
                         reminderCollectionReference.document(reminder.getId()).set(reminder);

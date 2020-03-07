@@ -1,5 +1,9 @@
 package com.markone.reminder.ui.dashboard;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,6 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 import com.markone.reminder.Common;
 import com.markone.reminder.R;
+import com.markone.reminder.alarm.AlarmReceiver;
 import com.markone.reminder.databinding.FragmentDashboardBinding;
 import com.markone.reminder.ui.reminder.Reminder;
 
@@ -40,6 +45,8 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by Neeraj on 02-Nov-19
  */
 public class DashboardFragment extends Fragment {
+    private AlarmManager alarmManager;
+
     private CollectionReference reminderCollectionReference;
 
     private FragmentDashboardBinding fragmentDashboardBinding;
@@ -71,6 +78,7 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
         layoutManager = new LinearLayoutManager(getContext());
         mAdapter = new RecyclerViewAdapter(getActivity(), reminders);
 
@@ -87,7 +95,7 @@ public class DashboardFragment extends Fragment {
         isFirstLogin = sharedPreferences.getBoolean(Common.IS_FIRST_LOGIN, true);
 
         if (isFirstLogin) {
-            sharedPreferences.edit().putBoolean(Common.SETTING_FILE, false).apply();
+            sharedPreferences.edit().putBoolean(Common.IS_FIRST_LOGIN, false).apply();
         }
     }
 
@@ -183,6 +191,10 @@ public class DashboardFragment extends Fragment {
                     upcomingAdapter.updateReminders(upcomingReminders);
                     upcomingAdapter.notifyDataSetChanged();
                     doneDashboardFragment.updateReminders(doneReminders);
+                    if (isFirstLogin) {
+                        setRemindersOnFirstLogin(reminders);
+                        setRemindersOnFirstLogin(upcomingReminders);
+                    }
                 } else {
                     Common.viewToast(getContext(), "Error while getting reminders");
                 }
@@ -193,5 +205,29 @@ public class DashboardFragment extends Fragment {
                 fragmentDashboardBinding.swipeFreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    private void setRemindersOnFirstLogin(List<Reminder> reminders) {
+        Calendar calendar = Calendar.getInstance();
+        for (Reminder reminder : reminders) {
+            calendar.set(Calendar.HOUR_OF_DAY, reminder.getStartDate_Hour());
+            calendar.set(Calendar.MINUTE, reminder.getStartDate_Minute());
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            calendar.set(Calendar.DAY_OF_MONTH, reminder.getStartDate_Day());
+            calendar.set(Calendar.MONTH, reminder.getStartDate_Month());
+            calendar.set(Calendar.YEAR, reminder.getStartDate_Year());
+            PendingIntent pendingIntent = getPendingIntent(reminder);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, Math.max(System.currentTimeMillis(), calendar.getTimeInMillis()), pendingIntent);
+        }
+    }
+
+    private PendingIntent getPendingIntent(Reminder reminder) {
+        // chk if already set or update
+        Intent intent = new Intent(getContext(), AlarmReceiver.class);
+        intent.setAction(reminder.getId());
+        intent.putExtra(Common.REMINDER_NAME, reminder.getName());
+        intent.putExtra(Common.REMINDER_FREQUENCY, reminder.getFrequency().toString());
+        return PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 }
