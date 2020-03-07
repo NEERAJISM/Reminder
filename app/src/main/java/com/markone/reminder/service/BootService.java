@@ -6,7 +6,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,9 +55,6 @@ public class BootService extends Service {
                         if (reminder.getStatus() == Common.Status.Done) {
                             continue;
                         }
-
-                        //Todo Add logs like this
-                        Log.v("Reminder", "Firestore reminder" + reminder.getName() + " " + reminder.getId());
 
                         calendar.set(Calendar.HOUR_OF_DAY, reminder.getStartDate_Hour());
                         calendar.set(Calendar.MINUTE, reminder.getStartDate_Minute());

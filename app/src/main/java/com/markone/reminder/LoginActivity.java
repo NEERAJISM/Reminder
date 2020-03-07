@@ -2,7 +2,6 @@ package com.markone.reminder;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -76,7 +75,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Common.viewToast(this, "Unable to sign-in");
             }
         } catch (ApiException e) {
-            Log.w("Reminder-TAG", "signInResult:failed code=" + e.getStatusCode());
             Common.viewToast(this, "Unable to sign-in");
         }
     }
