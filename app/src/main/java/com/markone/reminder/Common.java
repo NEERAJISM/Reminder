@@ -206,10 +206,11 @@ public class Common {
         calendar.set(Calendar.YEAR, reminder.getStartDate_Year());
     }
 
-    public static GoogleSignInClient getGoogleSignInClient(Activity activity) {
+    public static GoogleSignInClient getGoogleSignInClient(Activity activity, String clientId) {
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(clientId)
                 .requestEmail()
                 .build();
 

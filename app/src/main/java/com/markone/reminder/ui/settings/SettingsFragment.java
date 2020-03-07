@@ -13,8 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.markone.reminder.Common;
 import com.markone.reminder.LoginActivity;
 import com.markone.reminder.R;
@@ -32,7 +31,6 @@ import static com.markone.reminder.Common.Frequency.Every_5_Min;
 import static com.markone.reminder.Common.Frequency.getFrequency;
 import static com.markone.reminder.Common.SETTING_FILE;
 import static com.markone.reminder.Common.SNOOZE_SETTING;
-import static com.markone.reminder.Common.getGoogleSignInClient;
 
 public class SettingsFragment extends Fragment {
     private SharedPreferences sharedPreferences;
@@ -67,20 +65,12 @@ public class SettingsFragment extends Fragment {
         fragmentSettingsBinding.btSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getGoogleSignInClient(getActivity()).signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            //ToDo Remove all reminders
-                            sharedPreferences.edit().putBoolean(Common.IS_FIRST_LOGIN, false).apply();
-                            Common.viewToast(getContext(), "Logged out successfully!!");
-                            startActivity(new Intent(getContext(), LoginActivity.class));
-                            getActivity().finish();
-                        } else {
-                            Common.viewToast(getContext(), "Unable to logout!!");
-                        }
-                    }
-                });
+                //ToDo Remove all reminders
+                FirebaseAuth.getInstance().signOut();
+                sharedPreferences.edit().putBoolean(Common.IS_FIRST_LOGIN, false).apply();
+                Common.viewToast(getContext(), "Logged out successfully!!");
+                startActivity(new Intent(getContext(), LoginActivity.class));
+                getActivity().finish();
             }
         });
     }
