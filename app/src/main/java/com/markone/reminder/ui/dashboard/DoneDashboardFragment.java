@@ -1,6 +1,5 @@
 package com.markone.reminder.ui.dashboard;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.markone.reminder.Common;
 import com.markone.reminder.databinding.FragmentDoneDashboardBinding;
 import com.markone.reminder.ui.reminder.Reminder;
@@ -25,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class DoneDashboardFragment extends Fragment {
 
@@ -52,10 +53,7 @@ public class DoneDashboardFragment extends Fragment {
         earlierAdapter = new RecyclerViewAdapter(getActivity(), earlierReminders);
 
         createAlertDialog();
-        reminderCollectionReference = FirebaseFirestore.getInstance()
-                .collection(Common.REMINDER_DB)
-                .document(getActivity().getSharedPreferences(Common.USER_FILE, Context.MODE_PRIVATE).getString(Common.USER_ID, "UserId"))
-                .collection(Common.REMINDER_COLLECTION);
+        reminderCollectionReference = Common.getUserReminderCollection(Objects.requireNonNull(getActivity()).getSharedPreferences(Common.USER_FILE, MODE_PRIVATE).getString(Common.USER_ID, "UserId"));
     }
 
     @Nullable

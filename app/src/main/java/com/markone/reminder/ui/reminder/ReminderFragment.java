@@ -23,7 +23,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.markone.reminder.Common;
 import com.markone.reminder.R;
 import com.markone.reminder.alarm.AlarmReceiver;
@@ -32,6 +31,9 @@ import com.markone.reminder.databinding.FragmentReminderBinding;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Neeraj on 02-Nov-19
@@ -44,7 +46,7 @@ public class ReminderFragment extends Fragment {
     private int hour, min, day, year, month;
     private AlarmManager alarmManager;
 
-    private  CollectionReference reminderCollectionReference;
+    private CollectionReference reminderCollectionReference;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,10 +56,7 @@ public class ReminderFragment extends Fragment {
         for (Common.Frequency value : Common.Frequency.values()) {
             frequency.add(value.toString());
         }
-        reminderCollectionReference = FirebaseFirestore.getInstance()
-                .collection(Common.REMINDER_DB)
-                .document(getActivity().getSharedPreferences(Common.USER_FILE, Context.MODE_PRIVATE).getString(Common.USER_ID, "UserId"))
-                .collection(Common.REMINDER_COLLECTION);
+        reminderCollectionReference = Common.getUserReminderCollection(Objects.requireNonNull(getActivity()).getSharedPreferences(Common.USER_FILE, MODE_PRIVATE).getString(Common.USER_ID, "UserId"));
     }
 
     @Nullable

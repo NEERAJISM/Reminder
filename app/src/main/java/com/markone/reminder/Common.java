@@ -11,6 +11,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.markone.reminder.ui.reminder.Reminder;
 
 import java.text.SimpleDateFormat;
@@ -26,7 +28,7 @@ public class Common {
     public static final String REMINDER_COLLECTION = "Reminders";
     public static final String REMINDER_CHANNEL = "ReminderChannel";
     public static final long[] VIBRATION_PATTERN = {0L, 2000L, 500L};
-    public static final int MAX_REMINDERS = 15;
+    public static final int MAX_REMINDERS = 20;
     public static final int MAX_REMINDERS_PRO = 100;
 
     public static final String REMINDER_DB = "Reminder DB";
@@ -49,6 +51,13 @@ public class Common {
     public static final String IS_FIRST_STARTUP = "isFirstStartup";
     public static final String IS_FIRST_LOGIN = "isFirstLogin";
     public static final String CURRENT_REMINDER_SIZE = "currentReminderSize";
+
+    public static CollectionReference getUserReminderCollection(String userId) {
+        return FirebaseFirestore.getInstance()
+                .collection(Common.REMINDER_DB)
+                .document(userId)
+                .collection(Common.REMINDER_COLLECTION);
+    }
 
     public static final Comparator<Reminder> reminderComparator = new Comparator<Reminder>() {
         @Override
@@ -120,6 +129,44 @@ public class Common {
         Low, Med, High, Done
     }
 
+    public static void updateCalendar(Calendar calendar, Frequency frequency) {
+        switch (frequency) {
+            case Every_1_Min:
+                calendar.add(Calendar.MINUTE, 1);
+                break;
+            case Every_5_Min:
+                calendar.add(Calendar.MINUTE, 5);
+                break;
+            case Every_10_Min:
+                calendar.add(Calendar.MINUTE, 10);
+                break;
+            case Every_30_Min:
+                calendar.add(Calendar.MINUTE, 30);
+                break;
+            case Hourly:
+                calendar.add(Calendar.HOUR_OF_DAY, 1);
+                break;
+            case Daily:
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                break;
+            case AlternateDay:
+                calendar.add(Calendar.DAY_OF_MONTH, 2);
+                break;
+            case Weekly:
+                calendar.add(Calendar.WEEK_OF_MONTH, 1);
+                break;
+            case Monthly:
+                calendar.add(Calendar.MONTH, 1);
+                break;
+            case Quarterly:
+                calendar.add(Calendar.MONTH, 3);
+                break;
+            case Yearly:
+                calendar.add(Calendar.YEAR, 1);
+                break;
+        }
+    }
+
     public enum Frequency {
         Once("Once"),
         Every_1_Min("1 Min"),
@@ -128,8 +175,10 @@ public class Common {
         Every_30_Min("30 Min"),
         Hourly("Hourly"),
         Daily("Daily"),
+        AlternateDay("Alternate Day"),
         Weekly("Weekly"),
         Monthly("Monthly"),
+        Quarterly("Quarterly"),
         Yearly("Yearly");
 
         private static final Map<String, Frequency> ENUM_MAP;
@@ -157,38 +206,6 @@ public class Common {
         @Override
         public String toString() {
             return frequency;
-        }
-    }
-
-    public static void updateCalendar(Calendar calendar, Frequency frequency) {
-        switch (frequency) {
-            case Every_1_Min:
-                calendar.add(Calendar.MINUTE, 1);
-                break;
-            case Every_5_Min:
-                calendar.add(Calendar.MINUTE, 5);
-                break;
-            case Every_10_Min:
-                calendar.add(Calendar.MINUTE, 10);
-                break;
-            case Every_30_Min:
-                calendar.add(Calendar.MINUTE, 30);
-                break;
-            case Hourly:
-                calendar.add(Calendar.HOUR_OF_DAY, 1);
-                break;
-            case Daily:
-                calendar.add(Calendar.DAY_OF_MONTH, 1);
-                break;
-            case Weekly:
-                calendar.add(Calendar.WEEK_OF_MONTH, 1);
-                break;
-            case Monthly:
-                calendar.add(Calendar.MONTH, 1);
-                break;
-            case Yearly:
-                calendar.add(Calendar.YEAR, 1);
-                break;
         }
     }
 

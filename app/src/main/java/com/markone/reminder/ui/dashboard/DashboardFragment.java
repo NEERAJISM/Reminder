@@ -23,7 +23,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
@@ -86,10 +85,7 @@ public class DashboardFragment extends Fragment {
         upcomingAdapter = new RecyclerViewAdapter(getActivity(), upcomingReminders);
         navController = NavHostFragment.findNavController(this);
 
-        reminderCollectionReference = FirebaseFirestore.getInstance()
-                .collection(Common.REMINDER_DB)
-                .document(Objects.requireNonNull(getActivity()).getSharedPreferences(Common.USER_FILE, MODE_PRIVATE).getString(Common.USER_ID, "UserId"))
-                .collection(Common.REMINDER_COLLECTION);
+        reminderCollectionReference = Common.getUserReminderCollection(Objects.requireNonNull(getActivity()).getSharedPreferences(Common.USER_FILE, MODE_PRIVATE).getString(Common.USER_ID, "UserId"));
 
         sharedPreferences = getActivity().getSharedPreferences(Common.SETTING_FILE, MODE_PRIVATE);
         isFirstLogin = sharedPreferences.getBoolean(Common.IS_FIRST_LOGIN, true);
