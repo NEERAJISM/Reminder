@@ -1,5 +1,7 @@
 package com.markone.reminder.ui.settings;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,14 +15,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.markone.reminder.Common;
 import com.markone.reminder.LoginActivity;
 import com.markone.reminder.R;
+import com.markone.reminder.alarm.AlarmReceiver;
 import com.markone.reminder.databinding.FragmentSettingsBinding;
+import com.markone.reminder.ui.reminder.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.markone.reminder.Common.Frequency;
@@ -33,6 +44,8 @@ import static com.markone.reminder.Common.SETTING_FILE;
 import static com.markone.reminder.Common.SNOOZE_SETTING;
 
 public class SettingsFragment extends Fragment {
+    private AlarmManager alarmManager;
+    private CollectionReference reminderCollectionReference;
     private SharedPreferences sharedPreferences;
 
     private FragmentSettingsBinding fragmentSettingsBinding;
@@ -46,6 +59,9 @@ public class SettingsFragment extends Fragment {
         snoozeListName.add(Every_5_Min.toString());
         snoozeListName.add(Every_10_Min.toString());
         snoozeListName.add(Every_30_Min.toString());
+
+        alarmManager = (AlarmManager) Objects.requireNonNull(getContext()).getSystemService(Context.ALARM_SERVICE);
+        reminderCollectionReference = Common.getUserReminderCollection(Objects.requireNonNull(getActivity()).getSharedPreferences(Common.USER_FILE, MODE_PRIVATE).getString(Common.USER_ID, "UserId"));
 
         sharedPreferences = getActivity().getSharedPreferences(Common.SETTING_FILE, MODE_PRIVATE);
         snoozeFrequency = getFrequency(sharedPreferences.getString(SNOOZE_SETTING, Every_1_Min.toString()));
@@ -65,12 +81,37 @@ public class SettingsFragment extends Fragment {
         fragmentSettingsBinding.btSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ToDo Remove all reminders
+                removeAllAlarms();
                 FirebaseAuth.getInstance().signOut();
-                sharedPreferences.edit().putBoolean(Common.IS_FIRST_LOGIN, false).apply();
+                sharedPreferences.edit().putBoolean(Common.SIGNOUT, true).apply();
                 Common.viewToast(getContext(), "Logged out successfully!!");
                 startActivity(new Intent(getContext(), LoginActivity.class));
                 getActivity().finish();
+            }
+        });
+    }
+
+    private void removeAllAlarms() {
+        reminderCollectionReference.get(Source.CACHE).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    if (alarmManager == null)
+                        return;
+
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                        Reminder reminder = documentSnapshot.toObject(Reminder.class);
+                        if (reminder.getStatus() == Common.Status.Done) {
+                            continue;
+                        }
+
+                        Intent intent = new Intent(getContext(), AlarmReceiver.class);
+                        intent.setAction(reminder.getId());
+                        intent.putExtra(Common.REMINDER_NAME, reminder.getName());
+                        intent.putExtra(Common.REMINDER_FREQUENCY, reminder.getFrequency().toString());
+                        alarmManager.cancel(PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT));
+                    }
+                }
             }
         });
     }

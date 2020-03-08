@@ -65,7 +65,7 @@ public class DashboardFragment extends Fragment {
 
     private DoneDashboardFragment doneDashboardFragment;
 
-    private boolean isFirstLogin = true;
+    private boolean signout = true;
     private boolean isProUser = false;
     private SharedPreferences sharedPreferences;
 
@@ -88,10 +88,9 @@ public class DashboardFragment extends Fragment {
         reminderCollectionReference = Common.getUserReminderCollection(Objects.requireNonNull(getActivity()).getSharedPreferences(Common.USER_FILE, MODE_PRIVATE).getString(Common.USER_ID, "UserId"));
 
         sharedPreferences = getActivity().getSharedPreferences(Common.SETTING_FILE, MODE_PRIVATE);
-        isFirstLogin = sharedPreferences.getBoolean(Common.IS_FIRST_LOGIN, true);
-
-        if (isFirstLogin) {
-            sharedPreferences.edit().putBoolean(Common.IS_FIRST_LOGIN, false).apply();
+        signout = sharedPreferences.getBoolean(Common.SIGNOUT, true);
+        if (signout) {
+            sharedPreferences.edit().putBoolean(Common.SIGNOUT, false).apply();
         }
     }
 
@@ -141,7 +140,7 @@ public class DashboardFragment extends Fragment {
 
     void getReminders() {
         fragmentDashboardBinding.swipeFreshLayout.setRefreshing(true);
-        reminderCollectionReference.get(isFirstLogin ? Source.DEFAULT : Source.CACHE).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        reminderCollectionReference.get((signout) ? Source.DEFAULT : Source.CACHE).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull final Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
@@ -187,7 +186,7 @@ public class DashboardFragment extends Fragment {
                     upcomingAdapter.updateReminders(upcomingReminders);
                     upcomingAdapter.notifyDataSetChanged();
                     doneDashboardFragment.updateReminders(doneReminders);
-                    if (isFirstLogin) {
+                    if (signout) {
                         setRemindersOnFirstLogin(reminders);
                         setRemindersOnFirstLogin(upcomingReminders);
                     }

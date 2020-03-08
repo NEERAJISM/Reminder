@@ -49,7 +49,7 @@ public class Common {
     public static final String SETTING_FILE = "Settings";
     public static final String SNOOZE_SETTING = "snoozeSetting";
     public static final String IS_FIRST_STARTUP = "isFirstStartup";
-    public static final String IS_FIRST_LOGIN = "isFirstLogin";
+    public static final String SIGNOUT = "signout";
     public static final String CURRENT_REMINDER_SIZE = "currentReminderSize";
 
     public static CollectionReference getUserReminderCollection(String userId) {
