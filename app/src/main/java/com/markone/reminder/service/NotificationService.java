@@ -102,6 +102,7 @@ public class NotificationService extends Service {
                 .setContentTitle("Reminder")
                 .setContentText(reminderName)
                 .setWhen(System.currentTimeMillis())
+                .setFullScreenIntent(pendingIntentActivity, true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOngoing(true)
                 //Todo make it configurable
