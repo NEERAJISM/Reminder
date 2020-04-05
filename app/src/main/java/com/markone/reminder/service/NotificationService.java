@@ -9,6 +9,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.VibrationEffect;
@@ -49,6 +50,7 @@ public class NotificationService extends Service {
     private LinkedBlockingQueue<Notification> backgroundNotifications = new LinkedBlockingQueue<>();
 
     private Vibrator vibrator;
+    private MediaPlayer mediaPlayer;
     private NotificationManager notificationManager;
     private CollectionReference reminderCollectionReference;
     private AlarmManager alarmManager;
@@ -57,6 +59,8 @@ public class NotificationService extends Service {
     public void onCreate() {
         reminderCollectionReference = Common.getUserReminderCollection(getSharedPreferences(Common.USER_FILE, Context.MODE_PRIVATE).getString(Common.USER_ID, "UserId"));
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        mediaPlayer = MediaPlayer.create(this, R.raw.default_ringtone);
+        mediaPlayer.setLooping(true);
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         setNotificationChannel();
@@ -128,6 +132,7 @@ public class NotificationService extends Service {
                 foregroundNotification = notification;
                 startForeground(uniqueId, foregroundNotification);
                 startVibration();
+                mediaPlayer.start();
             } else {
                 backgroundNotifications.put(notification);
                 notificationManager.notify(reminderId, 0, notification);
@@ -161,6 +166,7 @@ public class NotificationService extends Service {
 
         // All empty
         if (idNotificationMap.isEmpty()) {
+            mediaPlayer.stop();
             vibrator.cancel();
             stopForeground(true);
             stopSelf();
@@ -255,6 +261,7 @@ public class NotificationService extends Service {
             channel.setDescription("Channel to generate reminders for reminder app");
             channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PRIVATE);
             channel.enableVibration(true);
+            channel.setSound(null, null);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             notificationManager.createNotificationChannel(channel);

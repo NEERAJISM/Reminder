@@ -1,6 +1,7 @@
 package com.markone.reminder;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
@@ -50,9 +51,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.bt_sign_in) {
-            Intent signInIntent = getGoogleSignInClient(this, getString(R.string.default_web_client_id)).getSignInIntent();
-            startActivityForResult(signInIntent, RC_SIGN_IN);
+        switch (v.getId()) {
+            case R.id.bt_sign_in:
+                Intent signInIntent = getGoogleSignInClient(this, getString(R.string.default_web_client_id)).getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+                break;
+            case R.id.tv_privacy_policy:
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.privacy_policy)));
+                startActivity(browserIntent);
+                break;
         }
     }
 

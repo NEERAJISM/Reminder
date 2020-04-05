@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -45,6 +47,7 @@ public class ReminderFragment extends Fragment {
     private List<String> frequency;
     private int hour, min, day, year, month;
     private AlarmManager alarmManager;
+    private AlertDialog.Builder alertDialog;
 
     private CollectionReference reminderCollectionReference;
 
@@ -52,7 +55,8 @@ public class ReminderFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
-        frequency = new ArrayList<String>();
+        frequency = new ArrayList<>();
+        createAlertDialog();
         for (Common.Frequency value : Common.Frequency.values()) {
             frequency.add(value.toString());
         }
@@ -134,7 +138,7 @@ public class ReminderFragment extends Fragment {
         binding.btDeleteReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteReminder();
+                alertDialog.show();
             }
         });
     }
@@ -305,5 +309,16 @@ public class ReminderFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void createAlertDialog() {
+        alertDialog = new AlertDialog.Builder(getContext())
+                .setTitle("Delete Reminder ?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteReminder();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null);
     }
 }
