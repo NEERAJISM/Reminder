@@ -36,9 +36,6 @@ public class DoneDashboardFragment extends Fragment {
     private RecyclerView.LayoutManager doneLayoutManager;
     private RecyclerViewAdapter doneAdapter;
     private List<Reminder> doneReminders = new ArrayList<>();
-
-    private RecyclerView.LayoutManager earlierLayoutManager;
-    private RecyclerViewAdapter earlierAdapter;
     private List<Reminder> earlierReminders = new ArrayList<>();
 
     private CollectionReference reminderCollectionReference;
@@ -48,9 +45,6 @@ public class DoneDashboardFragment extends Fragment {
         super.onCreate(savedInstanceState);
         doneLayoutManager = new LinearLayoutManager(getContext());
         doneAdapter = new RecyclerViewAdapter(getActivity(), doneReminders);
-
-        earlierLayoutManager = new LinearLayoutManager(getContext());
-        earlierAdapter = new RecyclerViewAdapter(getActivity(), earlierReminders);
 
         createAlertDialog();
         reminderCollectionReference = Common.getUserReminderCollection(Objects.requireNonNull(getActivity()).getSharedPreferences(Common.USER_FILE, MODE_PRIVATE).getString(Common.USER_ID, "UserId"));
@@ -66,10 +60,6 @@ public class DoneDashboardFragment extends Fragment {
             RecyclerView doneRecyclerView = fragmentDashboardBinding.rvReminders;
             doneRecyclerView.setLayoutManager(doneLayoutManager);
             doneRecyclerView.setAdapter(doneAdapter);
-
-            RecyclerView earlierRecyclerView = fragmentDashboardBinding.rvEarlierReminders;
-            earlierRecyclerView.setLayoutManager(earlierLayoutManager);
-            earlierRecyclerView.setAdapter(earlierAdapter);
 
             setFloatingButtonAction();
         }
@@ -147,13 +137,11 @@ public class DoneDashboardFragment extends Fragment {
     }
 
     private void updateView() {
-        doneAdapter.updateReminders(doneReminders);
+        doneAdapter.clearReminders();
+        doneAdapter.updateReminders(doneReminders, "Today");
+        doneAdapter.updateReminders(earlierReminders, "Earlier");
         doneAdapter.notifyDataSetChanged();
-        earlierAdapter.updateReminders(earlierReminders);
-        earlierAdapter.notifyDataSetChanged();
 
         fragmentDashboardBinding.tvNoReminders.setVisibility((doneReminders.size() == 0 && earlierReminders.size() == 0) ? View.VISIBLE : View.GONE);
-        fragmentDashboardBinding.tvToday.setVisibility((doneReminders.size() != 0) ? View.VISIBLE : View.GONE);
-        fragmentDashboardBinding.tvEarlier.setVisibility((earlierReminders.size() != 0) ? View.VISIBLE : View.GONE);
     }
 }

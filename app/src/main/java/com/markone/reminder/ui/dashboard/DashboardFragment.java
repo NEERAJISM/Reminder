@@ -51,18 +51,14 @@ public class DashboardFragment extends Fragment {
     private FragmentDashboardBinding fragmentDashboardBinding;
     private NavController navController;
 
-    private RecyclerView.LayoutManager layoutManager;
     private RecyclerViewAdapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
     private List<Reminder> reminders = new ArrayList<>();
-
-    private RecyclerView.LayoutManager upcomingLayoutManager;
-    private RecyclerViewAdapter upcomingAdapter;
     private List<Reminder> upcomingReminders = new ArrayList<>();
-
-    private List<Reminder> doneReminders = new ArrayList<>();
 
     private FloatingActionButton floatingActionButton;
 
+    private List<Reminder> doneReminders = new ArrayList<>();
     private DoneDashboardFragment doneDashboardFragment;
 
     private boolean signout = true;
@@ -73,7 +69,6 @@ public class DashboardFragment extends Fragment {
         this.doneDashboardFragment = doneDashboardFragment;
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,8 +76,6 @@ public class DashboardFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getContext());
         mAdapter = new RecyclerViewAdapter(getActivity(), reminders);
 
-        upcomingLayoutManager = new LinearLayoutManager(getContext());
-        upcomingAdapter = new RecyclerViewAdapter(getActivity(), upcomingReminders);
         navController = NavHostFragment.findNavController(this);
 
         reminderCollectionReference = Common.getUserReminderCollection(Objects.requireNonNull(getActivity()).getSharedPreferences(Common.USER_FILE, MODE_PRIVATE).getString(Common.USER_ID, "UserId"));
@@ -104,10 +97,6 @@ public class DashboardFragment extends Fragment {
             RecyclerView recyclerView = fragmentDashboardBinding.rvReminders;
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(mAdapter);
-
-            RecyclerView upcomingRecyclerView = fragmentDashboardBinding.rvUpcomingReminders;
-            upcomingRecyclerView.setLayoutManager(upcomingLayoutManager);
-            upcomingRecyclerView.setAdapter(upcomingAdapter);
             setSwipeFreshLayout();
         }
         getReminders();
@@ -180,11 +169,10 @@ public class DashboardFragment extends Fragment {
                         Collections.sort(upcomingReminders, Common.reminderComparator);
                     }
 
-                    mAdapter.updateReminders(reminders);
+                    mAdapter.clearReminders();
+                    mAdapter.updateReminders(reminders, "Today");
+                    mAdapter.updateReminders(upcomingReminders, "Upcoming");
                     mAdapter.notifyDataSetChanged();
-
-                    upcomingAdapter.updateReminders(upcomingReminders);
-                    upcomingAdapter.notifyDataSetChanged();
                     doneDashboardFragment.updateReminders(doneReminders);
                     if (signout) {
                         setRemindersOnFirstLogin(reminders);
@@ -195,8 +183,6 @@ public class DashboardFragment extends Fragment {
                 }
 
                 fragmentDashboardBinding.tvNoReminders.setVisibility((reminders.size() == 0 && upcomingReminders.size() == 0) ? View.VISIBLE : View.GONE);
-                fragmentDashboardBinding.tvToday.setVisibility((reminders.size() != 0) ? View.VISIBLE : View.GONE);
-                fragmentDashboardBinding.tvUpcoming.setVisibility((upcomingReminders.size() != 0) ? View.VISIBLE : View.GONE);
                 fragmentDashboardBinding.swipeFreshLayout.setRefreshing(false);
             }
         });

@@ -22,6 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyRecyclerViewHolder> {
+    public static final String HEADER_CONSTANT_ID = String.valueOf(Integer.MAX_VALUE);
+    public static final int HEADER_TYPE = 0;
+    public static final int REMINDER_TYPE = 1;
+
     private Activity activity;
     private List<Reminder> reminderList = new ArrayList<>();
 
@@ -32,17 +36,34 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    void updateReminders(List<Reminder> reminders) {
-        if (reminders != null) {
-            reminderList.clear();
+    void clearReminders() {
+        reminderList.clear();
+    }
+
+    void updateReminders(List<Reminder> reminders, String header) {
+        if (reminders != null && reminders.size() > 0) {
+            reminderList.add(getHeader(header));
             this.reminderList.addAll(reminders);
         }
+    }
+
+    private Reminder getHeader(String header) {
+        Reminder reminder = new Reminder();
+        reminder.setId(HEADER_CONSTANT_ID);
+        reminder.setName(header);
+        return reminder;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (HEADER_CONSTANT_ID.equals(reminderList.get(position).getId())) ? HEADER_TYPE : REMINDER_TYPE;
     }
 
     @NonNull
     @Override
     public MyRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyRecyclerViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.card_reminder, parent, false));
+        return (viewType == HEADER_TYPE) ? new MyRecyclerViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.card_header, parent, false))
+                : new MyRecyclerViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.card_reminder, parent, false));
     }
 
     @Override
@@ -56,6 +77,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public class MyRecyclerViewHolder extends RecyclerView.ViewHolder {
+        TextView tvHeader;
+
         ImageView ivStatus;
         TextView tvDate;
         TextView tvTime;
@@ -68,19 +91,29 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         MyRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
-            cardView = itemView.findViewById(R.id.card);
-            ivFrequency = itemView.findViewById(R.id.iv_frequency);
-            ivStatus = itemView.findViewById(R.id.iv_status);
-            tvDate = itemView.findViewById(R.id.tv_date);
-            tvTime = itemView.findViewById(R.id.tv_time);
-            tvFrequency = itemView.findViewById(R.id.tv_frequency);
-            tvName = itemView.findViewById(R.id.tv_name);
+
+            if (itemView.getId() == R.id.ll_header) {
+                tvHeader = itemView.findViewById(R.id.tv_header);
+            } else {
+                cardView = itemView.findViewById(R.id.card);
+                ivFrequency = itemView.findViewById(R.id.iv_frequency);
+                ivStatus = itemView.findViewById(R.id.iv_status);
+                tvDate = itemView.findViewById(R.id.tv_date);
+                tvTime = itemView.findViewById(R.id.tv_time);
+                tvFrequency = itemView.findViewById(R.id.tv_frequency);
+                tvName = itemView.findViewById(R.id.tv_name);
+            }
         }
 
         void onBind(int position) {
             mCurrentPosition = position;
 
             final Reminder reminder = reminderList.get(position);
+            if (HEADER_CONSTANT_ID.equals(reminder.getId())) {
+                tvHeader.setText(reminder.getName());
+                return;
+            }
+
             tvName.setText(reminder.getName());
 
             Common.Status status = reminder.getStatus();
