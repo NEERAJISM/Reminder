@@ -41,6 +41,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         setContentView(R.layout.activity_login);
         findViewById(R.id.bt_sign_in).setOnClickListener(this);
+        attemptSignIn();
         super.onCreate(savedInstanceState);
     }
 
@@ -53,14 +54,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_sign_in:
-                Intent signInIntent = getGoogleSignInClient(this, getString(R.string.default_web_client_id)).getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
+                attemptSignIn();
                 break;
             case R.id.tv_privacy_policy:
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.privacy_policy)));
                 startActivity(browserIntent);
                 break;
         }
+    }
+
+    private void attemptSignIn() {
+        Intent signInIntent = getGoogleSignInClient(this, getString(R.string.default_web_client_id)).getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override

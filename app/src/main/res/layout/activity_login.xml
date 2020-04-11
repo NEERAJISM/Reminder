@@ -135,7 +135,12 @@
             android:textSize="20dp" />
     </LinearLayout>
 
-    <com.google.android.gms.common.SignInButton
+    <Button
+        android:background="#FFFFFF"
+        android:drawableStart="@drawable/common_google_signin_btn_icon_light"
+        android:padding="10dp"
+        android:text="   Sign In with Google Account"
+        android:textAllCaps="false"
         android:id="@+id/bt_sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
