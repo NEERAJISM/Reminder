@@ -130,6 +130,7 @@ public class Common {
     }
 
     public static void updateCalendar(Calendar calendar, Frequency frequency) {
+        int dayOfWeek;
         switch (frequency) {
             case Every_1_Min:
                 calendar.add(Calendar.MINUTE, 1);
@@ -149,8 +150,24 @@ public class Common {
             case Daily:
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
                 break;
+            case WorkingWeek:
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                while (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) {
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                    dayOfWeek++;
+                }
+                break;
             case AlternateDay:
                 calendar.add(Calendar.DAY_OF_MONTH, 2);
+                break;
+            case Weekends:
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                while (dayOfWeek != Calendar.SATURDAY && dayOfWeek != Calendar.SUNDAY) {
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                    dayOfWeek++;
+                }
                 break;
             case Weekly:
                 calendar.add(Calendar.WEEK_OF_MONTH, 1);
@@ -175,7 +192,9 @@ public class Common {
         Every_30_Min("30 Min"),
         Hourly("Hourly"),
         Daily("Daily"),
+        WorkingWeek("Mon - Fri"),
         AlternateDay("Alternate Day"),
+        Weekends("Weekends"),
         Weekly("Weekly"),
         Monthly("Monthly"),
         Quarterly("Quarterly"),
