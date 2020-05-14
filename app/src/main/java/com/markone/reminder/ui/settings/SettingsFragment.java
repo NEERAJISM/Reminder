@@ -44,6 +44,7 @@ import static com.markone.reminder.Common.Frequency.Every_10_Min;
 import static com.markone.reminder.Common.Frequency.Every_1_Min;
 import static com.markone.reminder.Common.Frequency.Every_30_Min;
 import static com.markone.reminder.Common.Frequency.Every_5_Min;
+import static com.markone.reminder.Common.Frequency.Hourly;
 import static com.markone.reminder.Common.Frequency.getFrequency;
 import static com.markone.reminder.Common.SETTING_FILE;
 import static com.markone.reminder.Common.SNOOZE_SETTING;
@@ -66,6 +67,7 @@ public class SettingsFragment extends Fragment {
         snoozeListName.add(Every_5_Min.toString());
         snoozeListName.add(Every_10_Min.toString());
         snoozeListName.add(Every_30_Min.toString());
+        snoozeListName.add(Hourly.toString());
 
         alarmManager = (AlarmManager) Objects.requireNonNull(getContext()).getSystemService(Context.ALARM_SERVICE);
         reminderCollectionReference = Common.getUserReminderCollection(Objects.requireNonNull(getActivity()).getSharedPreferences(Common.USER_FILE, MODE_PRIVATE).getString(Common.USER_ID, "UserId"));
