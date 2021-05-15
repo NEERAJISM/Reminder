@@ -161,7 +161,7 @@ public class Common {
                 dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
                 while (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) {
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
-                    dayOfWeek++;
+                    dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
                 }
                 break;
             case AlternateDay:
@@ -172,7 +172,7 @@ public class Common {
                 dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
                 while (dayOfWeek != Calendar.SATURDAY && dayOfWeek != Calendar.SUNDAY) {
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
-                    dayOfWeek++;
+                    dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
                 }
                 break;
             case Weekly:
