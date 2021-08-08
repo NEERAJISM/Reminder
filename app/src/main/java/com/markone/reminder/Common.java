@@ -28,7 +28,7 @@ public class Common {
     public static final String REMINDER_COLLECTION = "Reminders";
     public static final String REMINDER_CHANNEL = "ReminderChannel";
     public static final long[] VIBRATION_PATTERN = {0L, 2000L, 500L};
-    public static final int MAX_REMINDERS = 20;
+    public static final int MAX_REMINDERS = 50;
     public static final int MAX_REMINDERS_PRO = 100;
 
     public static final String REMINDER_DB = "Reminder DB";

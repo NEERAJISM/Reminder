@@ -118,7 +118,7 @@ public class ReminderActivity extends AppCompatActivity {
 
                         if (reminder.getFrequency() != Common.Frequency.Once) {
                             binding.btMarkCompleteForever.setVisibility(View.VISIBLE);
-                            binding.btMarkComplete.setText("Complete Once");
+                            binding.btMarkComplete.setText("Stop");
                         } else {
                             binding.btMarkComplete.setText("Mark as Done");
                             binding.btMarkCompleteForever.setVisibility(View.GONE);
