@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "440009580286",
+    "firebase_url": "https://reminder-aaceb.firebaseio.com",
+    "project_id": "reminder-aaceb",
+    "storage_bucket": "reminder-aaceb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:440009580286:android:fd749fd3516700b5fc0faf",
+        "android_client_info": {
+          "package_name": "com.markone.reminder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "440009580286-jkgctn25d67699a9v16jfa8kk61cmodt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.markone.reminder",
+            "certificate_hash": "07b38e3bd45dcc29c0f9a16d4bc0aad3b2ceea58"
+          }
+        },
+        {
+          "client_id": "440009580286-aibv32889i6nj0t1nmuhp0nai23tlmtu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpbV8NbV65SRb4DEP09GnUXJhI80QCkoo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "440009580286-aibv32889i6nj0t1nmuhp0nai23tlmtu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
