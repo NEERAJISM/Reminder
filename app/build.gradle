@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 31
     defaultConfig {
         applicationId "com.markone.reminder"
         minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 10
-        versionName "4.6"
+        targetSdkVersion 31
+        versionCode 11
+        versionName "4.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -20,6 +20,7 @@ android {
     viewBinding {
         enabled = true
     }
+    namespace 'com.markone.reminder'
 }
 
 dependencies {
