@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -134,7 +133,6 @@ public class NotificationService extends Service {
                 startForeground(uniqueId, foregroundNotification);
                 startVibration();
                 mediaPlayer.start();
-                scheduleStop();
             } else {
                 backgroundNotifications.put(notification);
                 notificationManager.notify(reminderId, 0, notification);
@@ -143,16 +141,6 @@ public class NotificationService extends Service {
             e.printStackTrace();
         }
         return super.onStartCommand(intent, flags, startId);
-    }
-
-    private void scheduleStop() {
-        final Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
-                vibrator.cancel();
-            }
-        }, 60000);
     }
 
     private void handleNotification(String nId, int uniqueId) {
@@ -178,10 +166,8 @@ public class NotificationService extends Service {
 
         // All empty
         if (idNotificationMap.isEmpty()) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
-                vibrator.cancel();
-            }
+            mediaPlayer.stop();
+            vibrator.cancel();
             stopForeground(true);
             stopSelf();
         }
