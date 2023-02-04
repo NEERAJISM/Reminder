@@ -6,8 +6,8 @@ android {
         applicationId "com.markone.reminder"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 12
-        versionName "4.8"
+        versionCode 11
+        versionName "4.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
