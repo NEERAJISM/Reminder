@@ -153,6 +153,9 @@ public class Common {
             case Three_Hour:
                 calendar.add(Calendar.HOUR_OF_DAY, 3);
                 break;
+            case Twelve_Hour:
+                calendar.add(Calendar.HOUR_OF_DAY, 12);
+                break;
             case Daily:
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
                 break;
@@ -199,6 +202,7 @@ public class Common {
         Hourly("Hourly"),
         Two_Hour("Every 2 Hour"),
         Three_Hour("Every 3 Hour"),
+        Twelve_Hour("12 Hour"),
         Daily("Daily"),
         WorkingWeek("Mon - Fri"),
         AlternateDay("Alternate Day"),
