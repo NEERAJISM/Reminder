@@ -181,6 +181,9 @@ public class Common {
             case Weekly:
                 calendar.add(Calendar.WEEK_OF_MONTH, 1);
                 break;
+            case BiWeekly:
+                calendar.add(Calendar.WEEK_OF_MONTH, 2);
+                break;
             case Monthly:
                 calendar.add(Calendar.MONTH, 1);
                 break;
@@ -208,6 +211,7 @@ public class Common {
         AlternateDay("Alternate Day"),
         Weekends("Weekends"),
         Weekly("Weekly"),
+        BiWeekly("Bi-Weekly"),
         Monthly("Monthly"),
         Quarterly("Quarterly"),
         Yearly("Yearly");
